@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>黑白切換雛形網站 - Three.js 版</title>
+
+    <!-- 載入 GSAP 動畫引擎 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+
+    <style>
+        :root {
+            /* 淺色模式 (預設白底) */
+            --bg-color: #f8f9fa;
+            --text-color: #1a1a1a;
+            --btn-bg: rgba(26, 26, 26, 0.75);
+            --btn-text: #ffffff;
+            --btn-border: rgba(255, 255, 255, 0.5);
+            --btn-frosted-glow: rgba(255, 255, 255, 0.2);
+            --btn-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            --toggle-bg: #d1d5db;
+            --toggle-dot: #ffffff;
+            --toggle-icon-sun: #f59e0b;
+            --toggle-icon-moon: #4b5563;
+        }
+
+        [data-theme="dark"] {
+            /* 深色模式 (黑底) */
+            --bg-color: #121212;
+            --text-color: #f8f9fa;
+            --btn-bg: rgba(255, 255, 255, 0.8);
+            --btn-text: #1a1a1a;
+            --btn-border: rgba(0, 0, 0, 0.2);
+            --btn-frosted-glow: rgba(0, 0, 0, 0.15);
+            --btn-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+            --toggle-bg: #374151;
+            --toggle-dot: #1a1a1a;
+            --toggle-icon-sun: #fcd34d;
+            --toggle-icon-moon: #ffffff;
+        }
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', '-apple-system', 'Segoe UI', Roboto, sans-serif;
+            transition: background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #canvas-container canvas {
+            display: block;
+            outline: none;
+        }
+
+        .ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 30;
+            pointer-events: none;
+        }
+
+        .ui-element {
+            pointer-events: auto;
+        }
+
+        /* 左上角切換按鈕 */
+        .theme-switch-wrapper {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .theme-switch {
+            display: inline-block;
+            width: 68px;
+            height: 36px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .theme-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--toggle-bg);
+            border-radius: 36px;
+            transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .slider-dot {
+            position: absolute;
+            height: 28px;
+            width: 28px;
+            left: 4px;
+            bottom: 4px;
+            background-color: var(--toggle-dot);
+            border-radius: 50%;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.5s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            z-index: 2;
+        }
+
+        input:checked+.slider .slider-dot {
+            transform: translateX(32px);
+        }
+
+        input:checked+.slider {
+            background-color: var(--toggle-bg);
+        }
+
+        .icon {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 6px;
+            left: 6px;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .icon-sun {
+            color: var(--toggle-icon-sun);
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+        }
+
+        .icon-moon {
+            color: var(--toggle-icon-moon);
+            opacity: 0;
+            transform: rotate(-90deg) scale(0.5);
+        }
+
+        input:checked+.slider .icon-sun {
+            opacity: 0;
+            transform: rotate(90deg) scale(0.5);
+        }
+
+        input:checked+.slider .icon-moon {
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+        }
+
+        /* 中部下方按鈕 */
+        .start-btn-container {
+            position: absolute;
+            bottom: 4rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .portfolio-text {
+            font-size: 0.75rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            opacity: 0.6;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            pointer-events: none;
+        }
+
+        .start-btn {
+            padding: 1rem 4.5rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--btn-text);
+            background: var(--btn-bg);
+            border-radius: 9999px;
+            border: 1px solid var(--btn-border);
+            cursor: pointer;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: var(--btn-shadow), inset 0 0 15px var(--btn-frosted-glow);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2), inset 0 0 25px var(--btn-frosted-glow);
+        }
+
+        .start-btn:active {
+            transform: translateY(0px);
+        }
+
+        /* 轉場斑馬線與選單容器 */
+        .transition-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 20;
+            pointer-events: none;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20%;
+            box-sizing: border-box;
+            /* 兩側預留 20% 空間 */
+        }
+
+        .zebra-block {
+            width: 20%;
+            height: 100%;
+            /* 若為 20%，3 塊加總 60%，剩下 40% 的 flex 空間會均分給 2 個間格（各也是 20%） */
+            background-color: var(--text-color);
+            transform-origin: left center;
+            transform: scaleX(0);
+            /* 初始完全隱藏 */
+            transition: background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .chess-piece {
+            width: 120px;
+            height: 120px;
+            background-color: transparent;
+            opacity: 0;
+            pointer-events: none;
+            /* 避免擋住後方文字的 Hover 感應 */
+            margin-bottom: 0.5rem;
+            transition: scale 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            scale: 1;
+        }
+
+        /* 當滑鼠停在選單項目上方時，裡面的棋子會額外放大約 1/3 */
+        .menu-item:hover .chess-piece {
+            scale: 1.33;
+        }
+
+        .menu-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 21;
+            opacity: 0;
+            pointer-events: none;
+            display: flex;
+            padding: 0 20%;
+            box-sizing: border-box;
+        }
+
+        .menu-item {
+            width: 20%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            box-sizing: border-box;
+            padding: 0 10px;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease, color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .menu-item:hover {
+            transform: scale(1.1);
+        }
+
+        .menu-content:has(.menu-item:hover) .menu-item:not(:hover) {
+            opacity: 0.4;
+        }
+
+        .menu-item .en {
+            font-size: clamp(0.75rem, 1.2vw, 1.1rem);
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.3;
+        }
+
+        .menu-item .zh {
+            font-size: clamp(0.6rem, 0.9vw, 0.85rem);
+            font-weight: 500;
+            letter-spacing: 0.2em;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+
+        /* 奇數項落在斑馬線方塊上，背景為 text-color (預設黑)，因此文字需為 bg-color (預設白) */
+        .menu-item:nth-child(odd) {
+            color: var(--bg-color);
+        }
+
+        /* 偶數項落在兩條斑馬線間的空隙，透出 body 背景 bg-color (預設白)，因此文字需為 text-color (預設黑) */
+        .menu-item:nth-child(even) {
+            color: var(--text-color);
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 5rem;
+            left: 2rem;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            opacity: 0;
+            pointer-events: none;
+            font-family: 'Inter', sans-serif;
+            text-transform: uppercase;
+            padding: 0.5rem;
+            margin: 0;
+            border-bottom: 1px solid transparent;
+            transition: color 0.6s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s;
+        }
+
+        .back-btn:hover {
+            border-bottom: 1px solid var(--text-color);
+        }
+
+        /* 1. 隱藏全網頁預設游標 */
+        * {
+            cursor: none !important;
+        }
+
+        /* 2. CSS 日夜模式變色與基礎設定 */
+        .custom-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 9999;
+            pointer-events: none;
+            /* 確保準心置中 */
+            transform: translate(-50%, -50%);
+            width: 24px; /* 整體縮小 1/4 (由 32px 變為 24px) */
+            height: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .custom-cursor svg {
+            width: 100%;
+            height: auto;
+            overflow: visible;
+        }
+
+        /* 顏色連動（關鍵） */
+        .custom-cursor svg path {
+            fill: #1a1a1a;   /* 預設（淺色模式）下為深色 */
+            stroke: #ffffff; /* 預設（淺色模式）下為白色 */
+            
+            /* 【主要修改】：讓外框線向外長 */
+            stroke-width: 4px;         /* 寬度加倍，因為其中一半會被 fill 覆蓋 */
+            paint-order: stroke fill;  /* 關鍵！告訴瀏覽器「先畫線條，再塗滿顏色」，這會讓顏色蓋住往內長的線條 */
+            stroke-linejoin: round;    /* 讓線條轉折處圓滑，避免外框產生奇怪的尖刺 */
+            
+            transition: all 0.4s ease;
+        }
+
+        [data-theme="dark"] .custom-cursor svg path {
+            fill: #ffffff;   /* 當啟動深色模式時：fill 為白色 */
+            stroke: #1a1a1a; /* stroke 為深色 */
+        }
+
+        /* =============== 內頁轉場新增區段 =============== */
+        /* 導覽列 */
+        .top-nav {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            display: flex;
+            gap: 1rem;
+            z-index: 40;
+            pointer-events: none;
+        }
+
+        .nav-btn {
+            background: transparent;
+            color: var(--text-color);
+            border: 1px solid var(--text-color);
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                        color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        box-shadow 0.4s ease; /* 新增陰影的動畫讓加粗效果更自然 */
+            opacity: 0; /* 起始隱藏，等待 GSAP 動畫進場 */
+            pointer-events: auto; /* 雖然 container 把 events 關掉了但在啟動後這裡要能點 */
+        }
+
+        .nav-btn:hover {
+            /* 在原本 1px 的基礎下向內再擴展 1px，等同於往內加粗不影響佈局 */
+            box-shadow: inset 0 0 0 1px var(--text-color);
+        }
+
+        .nav-btn.active {
+            background: var(--text-color);
+            color: var(--bg-color);
+        }
+
+        /* 標題文字容器 */
+        #title-container {
+            position: absolute;
+            top: 50%;
+            left: 55%; /* 偏右對齊 */
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            z-index: 35;
+            color: var(--text-color);
+            pointer-events: none;
+            opacity: 0; /* 起始隱藏 */
+        }
+
+        #title-container .en-title {
+            font-size: clamp(2.5rem, 4vw, 4.5rem);
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            line-height: 1.1;
+            font-family: 'Inter', sans-serif;
+        }
+
+        #title-container .zh-title {
+            font-size: clamp(1.2rem, 1.8vw, 1.8rem);
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            opacity: 0.8;
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+
+<body>
+
+    <!-- 1. HTML 結構 (Inline SVG 關鍵) -->
+    <div class="custom-cursor">
+        <svg id="_圖層_1" data-name="圖層 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75.57 113.78">
+            <path d="M60.26,29.72c-.04-.24-.29-.36-.49-.47-.52-.21-1.07-.35-1.62-.47,1.18,.28,1.93,.6,2.1,.94Z"/>
+            <path d="M75.57,96.73c-.42-.91-2.68-1.55-5.51-2.01,3.16,.57,5.17,1.24,5.51,2.01Z"/>
+            <path d="M57.12,99.93c-5.46,.26-10.92,.36-16.39,.34,1.03-2.52,2.33-4.89,3.88-7.08,4.17,.03,8.35,.13,12.51,.33,1.94,.18,8.22,.44,12.94,1.2-5.67-1.02-15.04-1.71-25.12-2,6.51-8.92,17.03-14.72,28.92-14.72-12.58,0-23.65-23.61-30.02-45.87,8.59-.38,15.91-1.26,16.42-2.4-1.47,1.39-8.5,1.97-16.53,2.02-.38-1.35-.75-2.69-1.1-4.02,4.12,0,8.23,.13,12.32,.58,1.06,.14,2.15,.26,3.2,.49-3.07-.74-9.07-1.28-15.65-1.53-2.82-10.9-4.43-21.01-4.43-27.26,0,6.22-1.59,16.27-4.39,27.11-9.87,.04-18.64,.81-18.39,2.62-.19,1.73,7.72,2.51,16.96,2.61-6.39,22.2-17.42,45.67-29.97,45.67,11.83,0,22.31,5.74,28.82,14.58C14.66,92.72-.06,94.01,0,96.73c.01,2.99,17.52,4.23,35.68,4.15,1.55,4,2.41,8.35,2.41,12.9,0-4.57,.87-8.93,2.43-12.95,13.26-.23,26.06-1.14,31.86-2.57-.35,.08-.7,.15-1.05,.22-4.69,.85-9.45,1.17-14.2,1.46ZM16.85,29.73c3.19-1.06,6.66-1.13,10-1.44,2.21-.16,4.42-.28,6.64-.37-.31,1.19-.64,2.39-.98,3.6-7.18-.34-13.48-1-15.65-1.78Zm2.22,69.78c-4.73-.33-9.47-.69-14.12-1.58-1.25-.28-2.6-.49-3.67-1.18-.02,0-.02-.02-.03-.02,.01,0,.02-.02,.03-.02,1.06-.68,2.42-.89,3.67-1.17,4.65-.89,9.39-1.25,14.12-1.58,4.19-.28,8.39-.47,12.6-.6,1.48,2.13,2.74,4.43,3.74,6.86-5.45-.11-10.9-.34-16.34-.7Z"/>
+            <path d="M72.37,98.25c.81-.18,1.62-.4,2.38-.74,.33-.18,.75-.38,.82-.79-.21,.56-1.35,1.07-3.2,1.53Z"/>
+        </svg>
+    </div>
+
+    <div id="canvas-container"></div>
+
+    <div class="ui-layer">
+        <div class="theme-switch-wrapper ui-element">
+            <label class="theme-switch" aria-label="切換黑白模式">
+                <input type="checkbox" id="theme-toggle" />
+                <div class="slider">
+                    <div class="slider-dot">
+                        <svg class="icon icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                        <svg class="icon icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </label>
+        </div>
+
+        <!-- 增加返回按鈕在主題切換器下方 -->
+        <button class="back-btn ui-element" id="back-btn">BACK</button>
+
+        <!-- 新增：右上角選單導覽列 -->
+        <nav class="top-nav ui-element" id="top-nav">
+            <button class="nav-btn" data-target="back">選單</button>
+            <button class="nav-btn" data-target="0">個人履歷</button>
+            <button class="nav-btn" data-target="1">平面設計</button>
+            <button class="nav-btn" data-target="2">3D作品</button>
+            <button class="nav-btn" data-target="3">實務專案</button>
+            <button class="nav-btn" data-target="4">此網頁製作</button>
+        </nav>
+
+        <!-- 新增：標題文字容器 (給內頁轉場用) -->
+        <div id="title-container" class="ui-element"></div>
+
+        <div class="start-btn-container ui-element">
+            <span class="portfolio-text">LIYUE's portfolio</span>
+            <button class="start-btn" id="solve-btn">Start</button>
+        </div>
+    </div>
+
+    <!-- 轉場特效與選單元件 -->
+    <div class="transition-overlay">
+        <div class="zebra-block"></div>
+        <div class="zebra-block"></div>
+        <div class="zebra-block"></div>
+    </div>
+    <div class="menu-content" id="menu-content">
+        <div class="menu-item">
+            <model-viewer src="King'sPiece.glb" orientation="0deg 0deg 90deg" class="chess-piece" environment-image="neutral" shadow-intensity="1" shadow-softness="1" disable-zoom disable-pan></model-viewer>
+            <div class="en">Personal<br>resume</div>
+            <div class="zh">個人履歷</div>
+        </div>
+        <div class="menu-item">
+            <model-viewer src="QueenPiece.glb" orientation="0deg 0deg 90deg" class="chess-piece" environment-image="neutral" shadow-intensity="1" shadow-softness="1" disable-zoom disable-pan></model-viewer>
+            <div class="en">Graphic<br>Design</div>
+            <div class="zh">平面設計</div>
+        </div>
+        <div class="menu-item">
+            <model-viewer src="BishopPiece.glb" orientation="0deg 0deg 90deg" class="chess-piece" environment-image="neutral" shadow-intensity="1" shadow-softness="1" disable-zoom disable-pan></model-viewer>
+            <div class="en">3D Works</div>
+            <div class="zh">3D 作品</div>
+        </div>
+        <div class="menu-item">
+            <model-viewer src="KnightPiece.glb" orientation="0deg 0deg 90deg" class="chess-piece" environment-image="neutral" shadow-intensity="1" shadow-softness="1" disable-zoom disable-pan></model-viewer>
+            <div class="en">Practical<br>Projects</div>
+            <div class="zh">實務專案</div>
+        </div>
+        <div class="menu-item">
+            <model-viewer src="CastlePiece.glb" orientation="0deg 0deg 90deg" class="chess-piece" environment-image="neutral" shadow-intensity="1" shadow-softness="1" disable-zoom disable-pan></model-viewer>
+            <div class="en">This webpage<br>was created</div>
+            <div class="zh">此網頁製作</div>
+        </div>
+    </div>
+
+    <script>
+        // 日夜模式切換
+        document.getElementById('theme-toggle').addEventListener('change', function (e) {
+            document.documentElement.setAttribute('data-theme', e.target.checked ? 'dark' : 'light');
+        });
+
+        // ================= 3. GSAP 自訂游標與互動邏輯 =================
+        const cursor = document.querySelector('.custom-cursor');
+        
+        // 保留 translate 置中不被覆寫，並加入 -30 度旋轉，以及防閃爍的初始隱藏 (autoAlpha: 0)
+        gsap.set(cursor, { xPercent: -50, yPercent: -50, rotation: -30, autoAlpha: 0 });
+
+        let isCursorVisible = false;
+
+        // 監聽鼠標移動，以 GSAP 營造平滑的水潤阻尼感
+        window.addEventListener('mousemove', (e) => {
+            // 滑鼠有動作時確保游標顯示
+            if (!isCursorVisible) {
+                gsap.to(cursor, { autoAlpha: 1, duration: 0.3 });
+                isCursorVisible = true;
+            }
+            gsap.to(cursor, {
+                x: e.clientX,
+                y: e.clientY,
+                duration: 0.15,
+                ease: "power2.out"
+            });
+        });
+
+        // 游標移出視窗時隱藏游標
+        document.addEventListener('mouseleave', () => {
+            gsap.to(cursor, { autoAlpha: 0, duration: 0.3 });
+            isCursorVisible = false;
+        });
+
+        // 游標重回視窗時顯示游標
+        document.addEventListener('mouseenter', () => {
+            gsap.to(cursor, { autoAlpha: 1, duration: 0.3 });
+            isCursorVisible = true;
+        });
+
+        // 當滑鼠懸停於互動項目時縮放減半，改為 1.25 倍
+        const interactives = document.querySelectorAll('button, a, label, .menu-item');
+        interactives.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                gsap.to(cursor, { scale: 1.25, duration: 0.3, ease: "power2.out" });
+            });
+            el.addEventListener('mouseleave', () => {
+                gsap.to(cursor, { scale: 1, duration: 0.3, ease: "power2.out" });
+            });
+        });
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+        const container = document.getElementById('canvas-container');
+
+        // 初始化場景
+        const scene = new THREE.Scene();
+
+        // 渲染器：使用透明背景接收 body 的黑白顏色
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        container.appendChild(renderer.domElement);
+
+        // 建立 PMREMGenerator 與環境光貼圖，增強金屬反射的高光邊緣質感
+        const pmremGenerator = new THREE.PMREMGenerator(renderer);
+        scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
+
+        // 攝影機
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 2, 5);
+        camera.lookAt(0, 0, 0);
+
+        // 光源
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1.5); // 原本 2.5，微調以讓反射更明顯
+        scene.add(ambientLight);
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
+        directionalLight.position.set(5, 10, 5);
+        directionalLight.castShadow = true;
+        scene.add(directionalLight);
+
+        // 新增一個輔助光源，確保邊角與金屬面有足夠的高光反射
+        const fillLight = new THREE.DirectionalLight(0xffffff, 1.5);
+        fillLight.position.set(-5, 5, -5);
+        scene.add(fillLight);
+
+        // 控制器
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.target.set(0, 0, 0);
+
+        // ================= 高質感粒子背景 =================
+        // 動態生成圓形 canvas 作為粒子 map，避免預設的正方形
+        const canvas = document.createElement('canvas');
+        canvas.width = 32;
+        canvas.height = 32;
+        const context = canvas.getContext('2d');
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const radius = canvas.width / 2;
+
+        context.beginPath();
+        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+        context.fillStyle = '#ffffff';
+        context.fill();
+
+        const particleTexture = new THREE.CanvasTexture(canvas);
+
+        // 建立 1000 個粒子
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 1000;
+        const posArray = new Float32Array(particlesCount * 3);
+        const particleRange = 40; // 分佈於 (-20, 20) 的廣大空間
+
+        for (let i = 0; i < particlesCount * 3; i++) {
+            // Math.random() 範圍是 0 ~ 1，減 0.5 後為 -0.5 ~ 0.5，乘上 40 即 -20 ~ 20
+            posArray[i] = (Math.random() - 0.5) * particleRange;
+        }
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+        // 設定材質：透明度 0.4、關閉深度寫入
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.15,
+            map: particleTexture,
+            transparent: true,
+            opacity: 0.5, // 稍微調高透明度以增加實體感
+            depthWrite: false,
+            color: 0x222222, // 預設(淺色模式)改為更深的近黑色
+            blending: THREE.NormalBlending // 淺色模式必須用正常混合，避免白底曝光融合
+        });
+
+        // 動態監聽日夜模式切換
+        const themeToggle = document.getElementById('theme-toggle');
+        if (themeToggle.checked) {
+            particlesMaterial.color.setHex(0xaaaaaa);
+            particlesMaterial.blending = THREE.AdditiveBlending; // 深色模式保留光暈疊加
+        }
+
+        themeToggle.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                particlesMaterial.color.setHex(0xaaaaaa); // 深色/黑色模式：淡灰色
+                particlesMaterial.blending = THREE.AdditiveBlending;
+            } else {
+                particlesMaterial.color.setHex(0x222222); // 淺色/白色模式：加深的深灰色
+                particlesMaterial.blending = THREE.NormalBlending;
+            }
+            particlesMaterial.needsUpdate = true; // 強制更新材質混合模式
+        });
+
+        const particlesGroup = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesGroup);
+
+        // ================= 模型載入與位置完美居中 =================
+        const loader = new GLTFLoader();
+        let loadedModel = null;
+        let modelInner = null; // 指向被載入的實際 Group 節點，供洗牌時選取子物件抓取
+        let isShuffling = false;
+
+        loader.load(
+            'MagicCube.glb',
+            function (gltf) {
+                const model = gltf.scene;
+
+                model.traverse((child) => {
+                    if (child.isMesh) {
+                        child.castShadow = true;
+                        child.receiveShadow = true;
+
+                        // 判斷原本材質的顏色與名稱進行替換
+                        const mat = child.material;
+                        if (mat && mat.color) {
+                            const { r, g, b } = mat.color;
+                            // 判斷是否為深色 (例如 r, g, b 加總很小，或是有 black 等名稱)
+                            const isDark = (r + g + b) < 0.5 || (mat.name && mat.name.toLowerCase().includes('black'));
+
+                            if (isDark) {
+                                // 深色的部位：金屬質感
+                                child.material = new THREE.MeshStandardMaterial({
+                                    color: mat.color.getHex(),
+                                    metalness: 1.0,  // 完全金屬感
+                                    roughness: 0.25  // 保留光滑反光
+                                });
+                            } else {
+                                // 白色的部位：乾淨純粹，沒有高反光
+                                child.material = new THREE.MeshStandardMaterial({
+                                    color: mat.color.getHex(),
+                                    metalness: 0.0,
+                                    roughness: 1.0   // 特意拉高粗糙度避免不必要的高光
+                                });
+                            }
+                        }
+                    }
+                });
+
+                // [外圍層]：負責整體的動態飛入縮放、平移與旋轉特效
+                const wrapper = new THREE.Group();
+                scene.add(wrapper);
+
+                // [修正核心之一：穩定層 PuzzleRoot] 
+                // 這是一個獨立層，它的 Scale 永遠是 1，且座標永遠是絕對正中心 (0,0,0)
+                // 所有的魔方洗牌運算與 pivot 旋轉都在這裡進行，阻絕外部飛入動畫的高頻率縮放導致的三維矩陣錯亂
+                const puzzleRoot = new THREE.Group();
+                wrapper.add(puzzleRoot);
+
+                const box = new THREE.Box3().setFromObject(model);
+                const center = box.getCenter(new THREE.Vector3());
+                const size = box.getSize(new THREE.Vector3());
+
+                // 將原生模型內建的偏移抵消掉，讓它真正的幾何切面中心「完美對齊」 puzzleRoot 的 (0,0,0) 原點
+                model.position.x = -center.x;
+                model.position.y = -center.y;
+                model.position.z = -center.z;
+
+                // 把修正好原點的模型放進穩定層
+                puzzleRoot.add(model);
+
+                // 計算最長邊，找出最終的目標縮放值
+                const maxDim = Math.max(size.x, size.y, size.z);
+                const targetScale = 0.85 / (maxDim || 1);
+
+                // 初始化最外圍 wrapper 的動態飛入場景特效參數
+                wrapper.scale.setScalar(0.001);
+                wrapper.position.set(0, 5, -15);
+
+                wrapper.userData = {
+                    targetScale: targetScale,
+                    extraSpin: 25
+                };
+
+                // 設定全域指標
+                loadedModel = wrapper;   // 動畫迴圈控制外圍，產生特效
+                modelInner = puzzleRoot; // [修正核心之二] 洗牌邏輯控制對象改為「穩定層」，這樣 Pivot 加進來時原點也絕對是在魔方正中心
+
+                camera.lookAt(0, 0, 0);
+            },
+            undefined,
+            function (error) {
+                console.error('模型載入失敗！', error);
+            }
+        );
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }, false);
+
+        // ================= 滑鼠游標監聽 (Mouse Tracking) =================
+        let mouseX = 0;
+        let mouseY = 0;
+        window.addEventListener('mousemove', (event) => {
+            // 將螢幕座標轉換為歸一化的 WebGL 座標 (-1 到 1)
+            mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+            mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+        });
+
+        const clock = new THREE.Clock();
+        function animate() {
+            requestAnimationFrame(animate);
+            const delta = clock.getDelta();
+
+            // ================= 平滑視差動畫 (The Lerp Effect) =================
+            if (particlesGroup) {
+                // 目標 X 軸旋轉受 mouseY 影響，Y 軸受 mouseX 影響
+                // 設定 Lerp Factor 為 0.05 營造水中的高級阻尼感
+                particlesGroup.rotation.x = THREE.MathUtils.lerp(particlesGroup.rotation.x, mouseY * 0.2, 0.05);
+                particlesGroup.rotation.y = THREE.MathUtils.lerp(particlesGroup.rotation.y, mouseX * 0.2, 0.05);
+            }
+
+            if (loadedModel) {
+                // 平滑入場動畫 (Frame-rate independent lerp)
+                const lerpFactor = 1 - Math.exp(-6 * delta);
+
+                loadedModel.scale.x = THREE.MathUtils.lerp(loadedModel.scale.x, loadedModel.userData.targetScale, lerpFactor);
+                loadedModel.scale.y = loadedModel.scale.x;
+                loadedModel.scale.z = loadedModel.scale.x;
+
+                loadedModel.position.y = THREE.MathUtils.lerp(loadedModel.position.y, 0, lerpFactor);
+                loadedModel.position.z = THREE.MathUtils.lerp(loadedModel.position.z, 0, lerpFactor);
+
+                // 旋轉速度控制
+                let spinSpeed = 0.5;
+                if (loadedModel.userData.extraSpin > 0) {
+                    spinSpeed += loadedModel.userData.extraSpin;
+                    loadedModel.userData.extraSpin = THREE.MathUtils.lerp(loadedModel.userData.extraSpin, 0, lerpFactor * 0.8);
+                }
+
+                // === 若正在洗牌，則中止整體的緩慢自轉，讓解題視角固定 ===
+                if (!isShuffling) {
+                    loadedModel.rotation.y += spinSpeed * delta;
+                }
+            }
+
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+
+
+        // ================= 魔術方塊解謎洗牌邏輯 =================
+        const btn = document.getElementById('solve-btn');
+        btn.addEventListener('click', async () => {
+            if (isShuffling || !modelInner) return;
+            isShuffling = true;
+
+            const axes = ['x', 'y', 'z'];
+
+            // 找出所有的小方塊 Meshes
+            const cubies = [];
+            modelInner.traverse(child => {
+                if (child.isMesh) cubies.push(child);
+            });
+
+            // 循環 5 次，花費總時間約 200ms * 5 = 1秒
+            for (let i = 0; i < 5; i++) {
+                await new Promise((resolve) => {
+                    const axis = axes[Math.floor(Math.random() * axes.length)];
+                    const angle = (Math.random() > 0.5 ? 1 : -1) * (Math.PI / 2); // 90度 或 -90度
+
+                    // [關鍵修復]：在獲取座標前強制更新模型矩陣，確保世界座標數據沒有殘留上次旋轉的延遲
+                    modelInner.updateMatrixWorld(true);
+
+                    // 計算每個方塊以世界座標投影回內部座標系的實際中心位置，用以判斷層級
+                    const positions = cubies.map(c => {
+                        const tempBox = new THREE.Box3().setFromObject(c);
+                        const center = tempBox.getCenter(new THREE.Vector3());
+                        modelInner.worldToLocal(center);
+                        return { cubie: c, val: center[axis] };
+                    });
+
+                    // 隨機挑選某個方塊的座標當基準層 (這樣就保證能選到其中一層)
+                    const randomVal = positions[Math.floor(Math.random() * positions.length)].val;
+
+                    // 選出和該方塊座標接近的同層所有方塊 (容差 0.2，以應對浮點數誤差)
+                    const layerCubies = positions
+                        .filter(p => Math.abs(p.val - randomVal) < 0.2)
+                        .map(p => p.cubie);
+
+                    // [關鍵修復]：每次旋轉都建立全新的臨時 Pivot，徹底避免矩陣殘留污染
+                    const pivot = new THREE.Object3D();
+                    modelInner.add(pivot);
+                    pivot.updateMatrixWorld(true); // 立即更新矩陣
+
+                    // 使用 .attach() 轉移父層，這樣小方塊會保留它們的絕對位置跟旋轉
+                    layerCubies.forEach(c => pivot.attach(c));
+
+                    // 透過 GSAP 對樞紐執行旋轉動畫 (耗時 0.2 秒)
+                    gsap.to(pivot.rotation, {
+                        [axis]: angle,
+                        duration: 0.2,
+                        ease: "power2.inOut",
+                        onComplete: () => {
+                            // [關鍵修復之更新世界矩陣]：
+                            // 強制 Three.js 結算這次 GSAP 所產生出來的旋轉
+                            pivot.updateMatrixWorld(true);
+
+                            // [解除臨時群組與重新加入場景]：
+                            // re-attach 會自動合併 Pivot 產生的幾何體矩陣並抹除位移誤差
+                            layerCubies.forEach(c => modelInner.attach(c));
+
+                            // 清除臨時群組
+                            modelInner.remove(pivot);
+                            resolve(); // 繼續下一個序列
+                        }
+                    });
+                });
+            }
+
+            // 洗牌結束，執行「炸開並縮小消失」特效
+            // 在爆炸時同步執行：撤除舊元素 (注意：這次刪除了 theme-switch-wrapper 的漸隱，讓它保留)
+            gsap.to('.start-btn-container', { opacity: 0, duration: 0.8, ease: "power2.out", pointerEvents: "none" });
+            gsap.to(particlesGroup.material, { opacity: 0, duration: 0.8, ease: "power2.out" });
+
+            const explosionPromises = cubies.map(c => {
+                // 記下爆炸前一瞬間（已洗過牌）的真實空間座標，供未來返回上一頁組合時使用
+                c.userData.shuffledPosition = c.position.clone();
+
+                return new Promise(resolve => {
+                    // 獲取當前座標向量以決定爆裂方向
+                    const direction = c.position.clone();
+
+                    // 防呆處理：如果是藏在魔方最核心中心的那塊 (0,0,0)，normalize 會噴出 NaN
+                    // 我們給它一個隨機微小方向，讓它也能炸飛
+                    if (direction.lengthSq() < 0.0001) {
+                        direction.set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5);
+                    }
+
+                    // 將向量標準化並乘上 4 倍推力，得出目標座標
+                    direction.normalize();
+                    const targetPos = direction.multiplyScalar(4);
+
+                    // GSAP 同時執行位置移動與縮放至 0
+                    gsap.to(c.position, {
+                        x: targetPos.x,
+                        y: targetPos.y,
+                        z: targetPos.z,
+                        duration: 0.8,
+                        ease: "power2.out" // 起頭爆發力強，收尾柔和緩慢
+                    });
+
+                    gsap.to(c.scale, {
+                        x: 0,
+                        y: 0,
+                        z: 0,
+                        duration: 0.8,
+                        ease: "power2.out",
+                        onComplete: resolve // 此方塊動畫完畢後回報
+                    });
+                });
+            });
+
+            // 等待所有 26~27 塊小方塊皆確實炸飛消失
+            await Promise.all(explosionPromises);
+
+            // 啟動斑馬線橫向生長動畫 timeline
+            const tl = gsap.timeline({
+                onComplete: () => {
+                    isShuffling = false;
+                }
+            });
+
+            tl.to('.zebra-block', {
+                scaleX: 1,
+                duration: 1,
+                stagger: 0.1,
+                ease: "power3.inOut" // 營造鋼琴鍵般的節奏感
+            })
+                // 隨後淡入選單文字與返回按鈕做結尾
+                .to(['#menu-content', '#back-btn'], {
+                    opacity: 1,
+                    pointerEvents: 'auto',
+                    duration: 0.8,
+                    ease: "power2.out"
+                })
+                // 與文字同步執行：西洋棋落下，加上 staggered 呈現節奏感
+                const pieces = document.querySelectorAll('.chess-piece');
+                pieces.forEach((piece, index) => {
+                    const pos = index === 0 ? "<" : "<0.1";
+                    tl.fromTo(piece,
+                        { y: -80, opacity: 0 },
+                        { 
+                            y: 0, opacity: 1, duration: 0.6, ease: "bounce.out",
+                            onComplete: () => { piece.autoRotate = true; } 
+                        },
+                        pos
+                    );
+                });
+        });
+
+        // ================= 點擊選單進入內容頁的序列式動畫 =================
+        const menuItemsDOM = document.querySelectorAll('.menu-item');
+        const topNav = document.getElementById('top-nav');
+        const navBtns = document.querySelectorAll('.nav-btn');
+        const titleContainer = document.getElementById('title-container');
+
+        let activePiece = null;
+        let activeParent = null;
+
+        // ================= 返回選單的修正邏輯 =================
+        const menuReturnBtn = document.querySelector('.nav-btn[data-target="back"]');
+        menuReturnBtn.addEventListener('click', (e) => {
+            if (isShuffling || !activePiece) return;
+            isShuffling = true;
+            e.preventDefault();
+
+            // 1. 核心修復：在建立 Timeline 之前，瞬間重置隱藏的棋子
+            gsap.killTweensOf(activePiece);
+            gsap.set(activePiece, { clearProps: "all" });
+            
+            // 將棋子塞回原始父節點
+            activeParent.insertBefore(activePiece, activeParent.firstChild);
+            
+            // 拔除所有殘留屬性與視角
+            activePiece.removeAttribute('style');
+            activePiece.removeAttribute('camera-orbit');
+            activePiece.autoRotate = false;
+            
+            // 設定為準備落下的隱藏狀態
+            gsap.set(activePiece, { opacity: 0, y: -80 });
+
+            // 2. 開始建立時間軸
+            const tl = gsap.timeline();
+
+            // 關閉導覽列功能與淡出
+            topNav.style.pointerEvents = 'none';
+            tl.to(navBtns, {
+                opacity: 0,
+                duration: 0.4,
+                ease: "power2.in"
+            });
+
+            // 斑馬線、以及背後隱藏的所有菜單元素恢復
+            tl.to('.zebra-block', {
+                scaleX: 1,
+                duration: 0.8,
+                stagger: 0.1,
+                ease: "power3.inOut"
+            }, 0.2);
+
+            // 準備淡入
+            const siblings = Array.from(menuItemsDOM).filter(m => m !== activeParent);
+            const activeEn = activeParent.querySelector('.en');
+            const activeZh = activeParent.querySelector('.zh');
+
+            tl.to([...siblings, activeEn, activeZh, '#back-btn'], {
+                opacity: 1,
+                duration: 0.6,
+                ease: "power2.out"
+            }, 0.6);
+
+            // 當背景回來，所有棋子同步落下
+            const pieces = document.querySelectorAll('.chess-piece');
+            pieces.forEach((piece, index) => {
+                const pos = 0.6 + (index === 0 ? 0 : 0.1);
+                tl.fromTo(piece,
+                    { y: -80, opacity: 0 },
+                    { 
+                        y: 0, opacity: 1, duration: 0.6, ease: "bounce.out",
+                        onComplete: () => { piece.autoRotate = true; } 
+                    },
+                    pos
+                );
+            });
+
+            // 解除鎖定與恢復全域互通
+            tl.add(() => {
+                menuItemsDOM.forEach(m => m.style.pointerEvents = 'auto');
+                activePiece = null;
+                activeParent = null;
+                isShuffling = false;
+            });
+        });
+
+        menuItemsDOM.forEach((item, index) => {
+            item.addEventListener('click', (e) => {
+                if (isShuffling) return; // 借用現有的 isShuffling 作為防連點鎖定
+                isShuffling = true;
+
+                e.preventDefault();
+
+                // 準備標題所需內容
+                const enText = item.querySelector('.en').innerHTML;
+                const zhText = item.querySelector('.zh').innerText;
+                
+                const clickedPiece = item.querySelector('.chess-piece');
+                const siblings = Array.from(menuItemsDOM).filter(m => m !== item);
+
+                // 更新導覽列的反色狀態
+                navBtns.forEach(btn => btn.classList.remove('active'));
+                navBtns[index + 1].classList.add('active'); // 第 0 個是 '選單' 按鈕
+
+                // 為了讓這顆棋子能自由移動不受 Flexbox 影響，讀取它的目前絕對位置並轉為 position: fixed
+                const rect = clickedPiece.getBoundingClientRect();
+                
+                // 停止自轉
+                clickedPiece.autoRotate = false;
+
+                // 關閉所有選單互動
+                menuItemsDOM.forEach(m => m.style.pointerEvents = 'none');
+
+                gsap.set(clickedPiece, {
+                    position: 'fixed',
+                    left: rect.left,
+                    top: rect.top,
+                    width: rect.width,
+                    height: rect.height,
+                    margin: 0,
+                    zIndex: 100
+                });
+                
+                // 將它從原來的容器提出來獨立放在 body，避免等下其他東西消失影響它
+                document.body.appendChild(clickedPiece);
+
+                const tl = gsap.timeline();
+
+                // 1. 退場：未點中的元素與斑馬線退場
+                // 讓斑馬線縮小退場
+                tl.to('.zebra-block', {
+                    scaleX: 0,
+                    duration: 0.8,
+                    ease: "power3.inOut"
+                }, 0);
+                
+                // 其他未點擊的 Menu items 與 BACK 按鈕淡出
+                tl.to([...siblings, '#back-btn'], {
+                    opacity: 0,
+                    duration: 0.6,
+                    ease: "power2.out"
+                }, 0);
+                
+                // 被點擊項目的文字也要淡出 (因為只有棋子要留著)
+                tl.to([item.querySelector('.en'), item.querySelector('.zh')], {
+                    opacity: 0,
+                    duration: 0.4,
+                }, 0);
+
+                // 2. 棋子 Solo 動畫 (移動到左側、向上轉向並且加入景深霧化)
+                tl.to(clickedPiece, {
+                    left: '20vw',      // 移動到畫面左側
+                    top: '50vh',       // 畫面中央
+                    xPercent: -50,
+                    yPercent: -50,
+                    scale: 2.5,        // 放大
+                    filter: "blur(1.5px)", // 霧化效果減半 (微距景深感)
+                    duration: 0.8,
+                    ease: "power3.inOut",
+                    onUpdate: function() {
+                        // GSAP 的 progress 0~1，將 0~90 度漸變
+                        const p = this.progress();
+                        clickedPiece.setAttribute('camera-orbit', `${90 * p}deg 90deg auto`);
+                    }
+                }, 0.2); // 稍微延遲讓背景先退場
+
+                // 3. 文字滑入與消散序列
+                // 準備文字內容並設定起始位置 (從右方滑入)
+                tl.add(() => {
+                    titleContainer.innerHTML = `<div class="en-title">${enText}</div><div class="zh-title">${zhText}</div>`;
+                }, "-=0.4");
+
+                tl.fromTo(titleContainer, 
+                    { x: 50, opacity: 0 },
+                    { x: 0, opacity: 1, duration: 0.6, ease: "power2.out" },
+                    "-=0.2" // 和棋子抵達目標位置時同步開始
+                );
+
+                // 停留 1 秒鐘
+                tl.to({}, { duration: 1 });
+
+                // 文字反向滑出
+                tl.to(titleContainer, {
+                    x: -50,
+                    opacity: 0,
+                    duration: 0.6,
+                    ease: "power2.in"
+                });
+
+                // 棋子淡出並隱藏，不移除以便返回
+                tl.to(clickedPiece, {
+                    opacity: 0,
+                    duration: 0.6,
+                    ease: "power2.inOut",
+                    onComplete: () => {
+                        clickedPiece.style.display = 'none';
+                        activePiece = clickedPiece;
+                        activeParent = item;
+                    }
+                }, "<");
+
+                // 4. 導覽列進場
+                tl.to(navBtns, {
+                    opacity: 1,
+                    stagger: 0.1, // 依序浮現
+                    duration: 0.5,
+                    ease: "power2.out",
+                    onComplete: () => {
+                        // 開啟導覽列互動
+                        topNav.style.pointerEvents = 'auto';
+                        isShuffling = false; // 解除防連點鎖定
+                    }
+                });
+            });
+        });
+
+        // ================= 返回歡迎頁面的重置邏輯 =================
+        const backBtn = document.getElementById('back-btn');
+        backBtn.addEventListener('click', () => {
+            if (isShuffling) return; // 鎖定判定
+            isShuffling = true;
+
+            // 1. 隱藏文字與按鈕
+            gsap.to(['#menu-content', '#back-btn'], { opacity: 0, pointerEvents: 'none', duration: 0.4, ease: "power2.out" });
+
+            // 關閉所有的棋子旋轉狀態，確保下次打開選單時是乖乖落下後才開始轉
+            document.querySelectorAll('.chess-piece').forEach(p => p.autoRotate = false);
+
+            // 2. 琴鍵斑馬線退場 (反向 stagger 退離)
+            gsap.to('.zebra-block', {
+                scaleX: 0,
+                duration: 1,
+                stagger: -0.1, // 由右至左逆向收合
+                ease: "power3.inOut",
+                delay: 0.2, // 等字卡先消失
+                onComplete: () => {
+                    // 3. 恢復粒子星空與 Start 主按鈕
+                    gsap.to(particlesGroup.material, { opacity: 0.5, duration: 1, ease: "power2.inOut" });
+                    gsap.to('.start-btn-container', { opacity: 1, duration: 1, pointerEvents: "auto", ease: "power2.inOut" });
+
+                    // 4. 重組魔術方塊
+                    const cubies = [];
+                    modelInner.traverse(child => { if (child.isMesh) cubies.push(child); });
+
+                    const restorePromises = cubies.map(c => {
+                        return new Promise(resolve => {
+                            // 將位置與縮放從 0，倒轉還原回剛剛記下的「shuffledPosition」與比例 1
+                            gsap.to(c.position, {
+                                x: c.userData.shuffledPosition.x,
+                                y: c.userData.shuffledPosition.y,
+                                z: c.userData.shuffledPosition.z,
+                                duration: 1,
+                                ease: "power3.out" // 具備強烈磁力吸附感的節奏
+                            });
+                            gsap.to(c.scale, {
+                                x: 1, y: 1, z: 1,
+                                duration: 1,
+                                ease: "power3.out",
+                                onComplete: resolve
+                            });
+                        });
+                    });
+
+                    // 全部聚合完畢後，解除布林值限制，順勢推動方塊全體自轉一次
+                    Promise.all(restorePromises).then(() => {
+                        isShuffling = false;
+                        loadedModel.userData.extraSpin = 15; // 還原後增加華麗的大迴旋力道
+                    });
+                }
+            });
+        });
+
+        // ================= model-viewer 西洋棋金屬材質動態設定 =================
+        const chessPieces = document.querySelectorAll('.chess-piece');
+        chessPieces.forEach(viewer => {
+            viewer.addEventListener('load', () => {
+                if (viewer.model && viewer.model.materials) {
+                    viewer.model.materials.forEach(material => {
+                        // 保留原本顏色，但賦予高光澤金屬感
+                        material.pbrMetallicRoughness.setMetallicFactor(1.0);
+                        material.pbrMetallicRoughness.setRoughnessFactor(0.25);
+                    });
+                }
+            });
+        });
+
+    </script>
+</body>
+
+</html>
