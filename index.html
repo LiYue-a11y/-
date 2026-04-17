@@ -479,6 +479,268 @@
             opacity: 0.8;
             font-family: 'Inter', sans-serif;
         }
+
+        /* 內容容器通用樣式 */
+        .content-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0 10%;
+            box-sizing: border-box;
+            z-index: 38;
+            opacity: 0;
+            pointer-events: none;
+            color: var(--text-color);
+            gap: 8vw;
+        }
+
+        /* 打亂按鈕樣式 */
+        .scramble-btn {
+            position: absolute;
+            left: 2rem;
+            top: 50%;
+            transform: translateY(-50%) translateX(-20px);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 1rem 2rem; /* 稍微增加左右 padding 以配合圓角 */
+            border: 1px solid var(--text-color);
+            background: transparent;
+            border-radius: 999px; /* 左右半圓倒角 */
+            cursor: pointer;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
+                        transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                        background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                        color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Inter', sans-serif;
+            z-index: 45;
+        }
+
+        .scramble-btn:hover {
+            background-color: var(--text-color);
+            color: var(--bg-color);
+        }
+
+        .scramble-en {
+            font-size: 1.1rem;
+            font-weight: 300;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        .scramble-zh {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            letter-spacing: 0.4em;
+            margin-top: 0.2rem;
+        }
+
+        /* 計時器樣式 */
+        .timer-container {
+            position: absolute;
+            bottom: 4rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            z-index: 50;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
+                        transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .timer-display {
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--text-color);
+            letter-spacing: 1px;
+            min-width: 140px; /* 防止寬度跳動 */
+            text-align: center;
+        }
+
+        .timer-btn {
+            padding: 0.8rem 1.8rem;
+            border: 1px solid var(--text-color);
+            background: var(--btn-bg);
+            color: var(--btn-text);
+            border-radius: 9999px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .timer-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            background: var(--text-color);
+            color: var(--bg-color);
+        }
+
+        #timer-reset-btn {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+        /* 個人履歷頁面樣式 */
+        .resume-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0 10%;
+            box-sizing: border-box;
+            z-index: 38;
+            opacity: 0;
+            pointer-events: none;
+            color: var(--text-color);
+            gap: 8vw;
+        }
+
+        /* 左側：圖片與行星軌道 */
+        .resume-left {
+            position: relative;
+            flex: 0 0 540px; /* 稍微放大容器寬度以容納大圓 */
+            height: 540px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .main-circle-a {
+            position: absolute;
+            width: 475px; /* 380 * 1.25 */
+            height: 475px;
+            background-color: var(--text-color);
+            border-radius: 50%;
+            z-index: 1;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+            transition: background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .resume-photo {
+            position: relative;
+            width: 375px; /* 300 * 1.25 */
+            height: 500px; /* 400 * 1.25 */
+            object-fit: cover;
+            border-radius: 24px;
+            z-index: 5;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 行星軌道系統 */
+        .planet-orbit {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .planet {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100px; /* 控制旋轉半徑的容器 */
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .planet-core {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            transition: background-color 0.6s, border-color 0.6s;
+        }
+
+        .planet-core.solid {
+            background-color: var(--bg-color);
+        }
+
+        .planet-core.hollow {
+            background-color: transparent;
+            border: 2px solid var(--bg-color);
+        }
+
+        /* 右側：文字資訊 */
+        .resume-right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 3rem;
+        }
+
+        .info-block {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .name-row {
+            display: flex;
+            align-items: baseline;
+            gap: 1.5rem;
+        }
+
+        .name-en {
+            font-size: clamp(2rem, 3.3vw, 3.7rem); /* (3~5.5) * 0.66 */
+            font-weight: 200;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            line-height: 1;
+        }
+
+        .name-zh {
+            font-size: 1.2rem; /* 1.8 * 0.66 */
+            font-weight: 500;
+            letter-spacing: 0.3em;
+            opacity: 0.8;
+        }
+
+        .info-label {
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            opacity: 0.5;
+            margin-bottom: 0.2rem;
+        }
+
+        .info-content {
+            font-size: 1.4rem;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+        }
+
+        .info-gmail {
+            font-size: 1.3rem;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            opacity: 0.9;
+        }
     </style>
 
     <script type="importmap">
@@ -535,6 +797,19 @@
         <!-- 增加返回按鈕在主題切換器下方 -->
         <button class="back-btn ui-element" id="back-btn">BACK</button>
 
+        <!-- 新增：左側打亂按鈕 -->
+        <div id="scramble-btn" class="scramble-btn ui-element">
+            <div class="scramble-en">Scramble</div>
+            <div class="scramble-zh">打亂</div>
+        </div>
+
+        <!-- 新增：計時器容器 -->
+        <div class="timer-container ui-element" id="timer-container">
+            <div class="timer-display" id="timer-display">00:00:00</div>
+            <button class="timer-btn" id="timer-main-btn">Start the timer</button>
+            <button class="timer-btn" id="timer-reset-btn">Reset</button>
+        </div>
+
         <!-- 新增：右上角選單導覽列 -->
         <nav class="top-nav ui-element" id="top-nav">
             <button class="nav-btn" data-target="back">選單</button>
@@ -547,6 +822,75 @@
 
         <!-- 新增：標題文字容器 (給內頁轉場用) -->
         <div id="title-container" class="ui-element"></div>
+
+        <!-- 內容頁面區塊 -->
+        <div class="content-container ui-element" id="resume-page">
+            <div class="resume-left">
+                <div class="main-circle-a"></div>
+                <!-- 圖片 -->
+                <img src="img/myphoto.jpg" alt="LiYue" class="resume-photo">
+                
+                <!-- 行星系統 (內切圓精密定位) -->
+                <!-- 圓 1 (Solid): 直徑 100px, 偏移 = 237.5 - 50 = 187.5px -->
+                <div class="planet-orbit" id="planet-orbit-1">
+                    <div class="planet" style="width: 100px; height: 100px; transform: translate(-50%, -50%) rotate(0deg) translateX(187.5px);">
+                        <div class="planet-core solid"></div>
+                    </div>
+                </div>
+                <!-- 圓 2 (Hollow): 直徑 80px, 偏移 = 237.5 - 40 = 197.5px -->
+                <div class="planet-orbit" id="planet-orbit-2">
+                    <div class="planet" style="width: 80px; height: 80px; transform: translate(-50%, -50%) rotate(90deg) translateX(197.5px);">
+                        <div class="planet-core hollow"></div>
+                    </div>
+                </div>
+                <!-- 圓 3 (Solid): 直徑 60px, 偏移 = 237.5 - 30 = 207.5px -->
+                <div class="planet-orbit" id="planet-orbit-3">
+                    <div class="planet" style="width: 60px; height: 60px; transform: translate(-50%, -50%) rotate(180deg) translateX(207.5px);">
+                        <div class="planet-core solid"></div>
+                    </div>
+                </div>
+                <!-- 圓 4 (Hollow): 直徑 40px, 偏移 = 237.5 - 20 = 217.5px -->
+                <div class="planet-orbit" id="planet-orbit-4">
+                    <div class="planet" style="width: 40px; height: 40px; transform: translate(-50%, -50%) rotate(270deg) translateX(217.5px);">
+                        <div class="planet-core hollow"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="resume-right">
+                <!-- 第一區塊 -->
+                <div class="info-block">
+                    <div class="name-row">
+                        <div class="name-en">LiYue</div>
+                        <div class="name-zh">李岳</div>
+                    </div>
+                </div>
+                <!-- 第二區塊 -->
+                <div class="info-block">
+                    <div class="info-label">Phone . LINE ID</div>
+                    <div class="info-content">0979278549</div>
+                </div>
+                <!-- 第三區塊 -->
+                <div class="info-block">
+                    <div class="info-label">Gmail</div>
+                    <div class="info-gmail">asergr4068@gmail.com</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 其他頁面佔位符 -->
+        <div class="content-container ui-element" id="graphic-page">
+            <h1 style="font-size: 5rem; font-weight: 200;">Graphic Design</h1>
+        </div>
+        <div class="content-container ui-element" id="three-page">
+            <h1 style="font-size: 5rem; font-weight: 200;">3D Works</h1>
+        </div>
+        <div class="content-container ui-element" id="project-page">
+            <h1 style="font-size: 5rem; font-weight: 200;">Practical Projects</h1>
+        </div>
+        <div class="content-container ui-element" id="web-page">
+            <h1 style="font-size: 5rem; font-weight: 200;">This webpage</h1>
+        </div>
 
         <div class="start-btn-container ui-element">
             <span class="portfolio-text">LIYUE's portfolio</span>
@@ -629,8 +973,7 @@
             isCursorVisible = true;
         });
 
-        // 當滑鼠懸停於互動項目時縮放減半，改為 1.25 倍
-        const interactives = document.querySelectorAll('button, a, label, .menu-item');
+        const interactives = document.querySelectorAll('button, a, label, .menu-item, .scramble-btn, .timer-btn');
         interactives.forEach(el => {
             el.addEventListener('mouseenter', () => {
                 gsap.to(cursor, { scale: 1.25, duration: 0.3, ease: "power2.out" });
@@ -688,6 +1031,8 @@
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
         controls.target.set(0, 0, 0);
+        controls.enableZoom = true; // 確保縮放功能
+        controls.enablePan = false; // 禁止右鍵平移
 
         // ================= 高質感粒子背景 =================
         // 動態生成圓形 canvas 作為粒子 map，避免預設的正方形
@@ -752,92 +1097,94 @@
 
         // ================= 模型載入與位置完美居中 =================
         const loader = new GLTFLoader();
-        let loadedModel = null;
-        let modelInner = null; // 指向被載入的實際 Group 節點，供洗牌時選取子物件抓取
+        let loadedModel = new THREE.Group(); // 最外層容器
+        loadedModel.userData = { targetScale: 0.001, extraSpin: 0 }; // 預防初始化前的存取
+        scene.add(loadedModel);
+
+        let bwCube = null;
+        let colorCube = null;
+        let modelInner = null; // 當前正在操作的魔方 Root (可能是 bwCube 或 colorCube)
         let isShuffling = false;
 
-        loader.load(
-            'MagicCube.glb',
-            function (gltf) {
-                const model = gltf.scene;
-
-                model.traverse((child) => {
-                    if (child.isMesh) {
-                        child.castShadow = true;
-                        child.receiveShadow = true;
-
-                        // 判斷原本材質的顏色與名稱進行替換
-                        const mat = child.material;
-                        if (mat && mat.color) {
-                            const { r, g, b } = mat.color;
-                            // 判斷是否為深色 (例如 r, g, b 加總很小，或是有 black 等名稱)
-                            const isDark = (r + g + b) < 0.5 || (mat.name && mat.name.toLowerCase().includes('black'));
-
-                            if (isDark) {
-                                // 深色的部位：金屬質感
+        // 載入黑白魔方
+        function loadBW() {
+            return new Promise((resolve) => {
+                loader.load('MagicCube.glb', (gltf) => {
+                    const model = gltf.scene;
+                    model.traverse((child) => {
+                        if (child.isMesh) {
+                            child.castShadow = true;
+                            child.receiveShadow = true;
+                            const mat = child.material;
+                            if (mat && mat.color) {
+                                const { r, g, b } = mat.color;
+                                const isDark = (r + g + b) < 0.5 || (mat.name && mat.name.toLowerCase().includes('black'));
                                 child.material = new THREE.MeshStandardMaterial({
                                     color: mat.color.getHex(),
-                                    metalness: 1.0,  // 完全金屬感
-                                    roughness: 0.25  // 保留光滑反光
-                                });
-                            } else {
-                                // 白色的部位：乾淨純粹，沒有高反光
-                                child.material = new THREE.MeshStandardMaterial({
-                                    color: mat.color.getHex(),
-                                    metalness: 0.0,
-                                    roughness: 1.0   // 特意拉高粗糙度避免不必要的高光
+                                    metalness: isDark ? 1.0 : 0.0,
+                                    roughness: isDark ? 0.25 : 1.0
                                 });
                             }
                         }
-                    }
+                    });
+                    const puzzleRoot = setupPuzzleRoot(model);
+                    bwCube = puzzleRoot;
+                    loadedModel.add(bwCube);
+                    resolve();
                 });
+            });
+        }
 
-                // [外圍層]：負責整體的動態飛入縮放、平移與旋轉特效
-                const wrapper = new THREE.Group();
-                scene.add(wrapper);
+        // 載入彩色魔方
+        function loadColor() {
+            return new Promise((resolve) => {
+                loader.load('colorMagicCube.glb', (gltf) => {
+                    const model = gltf.scene;
+                    model.traverse((child) => {
+                        if (child.isMesh) {
+                            child.castShadow = true;
+                            child.receiveShadow = true;
+                            // 彩色魔方保留原始材質
+                        }
+                    });
+                    const puzzleRoot = setupPuzzleRoot(model);
+                    colorCube = puzzleRoot;
+                    colorCube.visible = false; // 初始隱藏
+                    loadedModel.add(colorCube);
+                    resolve();
+                });
+            });
+        }
 
-                // [修正核心之一：穩定層 PuzzleRoot] 
-                // 這是一個獨立層，它的 Scale 永遠是 1，且座標永遠是絕對正中心 (0,0,0)
-                // 所有的魔方洗牌運算與 pivot 旋轉都在這裡進行，阻絕外部飛入動畫的高頻率縮放導致的三維矩陣錯亂
-                const puzzleRoot = new THREE.Group();
-                wrapper.add(puzzleRoot);
+        function setupPuzzleRoot(model) {
+            const puzzleRoot = new THREE.Group();
+            const box = new THREE.Box3().setFromObject(model);
+            const center = box.getCenter(new THREE.Vector3());
+            const size = box.getSize(new THREE.Vector3());
 
-                const box = new THREE.Box3().setFromObject(model);
-                const center = box.getCenter(new THREE.Vector3());
-                const size = box.getSize(new THREE.Vector3());
+            model.position.x = -center.x;
+            model.position.y = -center.y;
+            model.position.z = -center.z;
+            puzzleRoot.add(model);
 
-                // 將原生模型內建的偏移抵消掉，讓它真正的幾何切面中心「完美對齊」 puzzleRoot 的 (0,0,0) 原點
-                model.position.x = -center.x;
-                model.position.y = -center.y;
-                model.position.z = -center.z;
+            const maxDim = Math.max(size.x, size.y, size.z);
+            const scale = 0.85 / (maxDim || 1);
+            puzzleRoot.userData.targetScale = scale;
 
-                // 把修正好原點的模型放進穩定層
-                puzzleRoot.add(model);
+            return puzzleRoot;
+        }
 
-                // 計算最長邊，找出最終的目標縮放值
-                const maxDim = Math.max(size.x, size.y, size.z);
-                const targetScale = 0.85 / (maxDim || 1);
+        Promise.all([loadBW(), loadColor()]).then(() => {
+            modelInner = bwCube;
+            
+            loadedModel.scale.setScalar(0.001);
+            loadedModel.position.set(0, 5, -15);
+            loadedModel.userData.targetScale = bwCube.userData.targetScale;
+            loadedModel.userData.extraSpin = 25;
+            
+            camera.lookAt(0, 0, 0);
+        });
 
-                // 初始化最外圍 wrapper 的動態飛入場景特效參數
-                wrapper.scale.setScalar(0.001);
-                wrapper.position.set(0, 5, -15);
-
-                wrapper.userData = {
-                    targetScale: targetScale,
-                    extraSpin: 25
-                };
-
-                // 設定全域指標
-                loadedModel = wrapper;   // 動畫迴圈控制外圍，產生特效
-                modelInner = puzzleRoot; // [修正核心之二] 洗牌邏輯控制對象改為「穩定層」，這樣 Pivot 加進來時原點也絕對是在魔方正中心
-
-                camera.lookAt(0, 0, 0);
-            },
-            undefined,
-            function (error) {
-                console.error('模型載入失敗！', error);
-            }
-        );
 
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
@@ -845,7 +1192,14 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         }, false);
 
-        // ================= 滑鼠游標監聽 (Mouse Tracking) =================
+        // ================= 全域變數與滑鼠游標監聽 =================
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        let dragStartPoint = null;
+        let clickedPoint = null;
+        let clickedCubie = null;
+        let isPlayMode = false;
+
         let mouseX = 0;
         let mouseY = 0;
         window.addEventListener('mousemove', (event) => {
@@ -885,8 +1239,8 @@
                     loadedModel.userData.extraSpin = THREE.MathUtils.lerp(loadedModel.userData.extraSpin, 0, lerpFactor * 0.8);
                 }
 
-                // === 若正在洗牌，則中止整體的緩慢自轉，讓解題視角固定 ===
-                if (!isShuffling) {
+                // === 若正在洗牌或遊玩，則中止整體的緩慢自轉，讓解題視角固定 ===
+                if (!isShuffling && !isPlayMode) {
                     loadedModel.rotation.y += spinSpeed * delta;
                 }
             }
@@ -895,6 +1249,192 @@
             renderer.render(scene, camera);
         }
         animate();
+
+        // ================= 遊玩模式：雙擊進入與滑鼠拖曳判定 =================
+        window.addEventListener('dblclick', (e) => {
+            if (isShuffling || !bwCube || !colorCube) return;
+            
+            mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+
+            const cubies = [];
+            bwCube.traverse(child => { if (child.isMesh) cubies.push(child); });
+
+            const intersects = raycaster.intersectObjects(cubies);
+            if (intersects.length > 0 && !isPlayMode) {
+                isPlayMode = true;
+                isShuffling = true; // 鎖定期間
+
+                gsap.to('.start-btn-container', { opacity: 0, pointerEvents: 'none', duration: 0.5 });
+                gsap.to('#back-btn', { opacity: 1, pointerEvents: 'auto', duration: 0.5 });
+                gsap.to('#scramble-btn', { opacity: 1, x: 0, pointerEvents: 'auto', duration: 0.5, delay: 0.3 });
+                gsap.to('#timer-container', { opacity: 1, y: 0, pointerEvents: 'auto', duration: 0.5, delay: 0.4 });
+                gsap.to(particlesGroup.material, { opacity: 0, duration: 0.5 });
+                
+                // 翻轉動畫
+                const targetRotationY = loadedModel.rotation.y + Math.PI;
+                gsap.to(loadedModel.rotation, { 
+                    y: targetRotationY, 
+                    x: 0, 
+                    z: 0, 
+                    duration: 0.5, 
+                    ease: "power2.inOut",
+                    onUpdate: function() {
+                        // 在一半 (0.25s) 時切換模型
+                        if (this.progress() >= 0.5 && modelInner !== colorCube) {
+                            bwCube.visible = false;
+                            colorCube.visible = true;
+                            modelInner = colorCube;
+                        }
+                    },
+                    onComplete: () => {
+                        isShuffling = false;
+                    }
+                });
+            }
+        });
+
+        window.addEventListener('pointerdown', (e) => {
+            if (!isPlayMode || isShuffling || !modelInner) return;
+
+            mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+
+            const cubies = [];
+            modelInner.traverse(child => { if (child.isMesh) cubies.push(child); });
+
+            const intersects = raycaster.intersectObjects(cubies);
+            if (intersects.length > 0) {
+                controls.enableRotate = false; // 點中方塊時停止鏡頭旋轉
+                clickedCubie = intersects[0].object;
+                clickedPoint = intersects[0].point.clone(); // 記錄精準的世界座標點
+                dragStartPoint = { x: e.clientX, y: e.clientY };
+            } else {
+                controls.enableRotate = true; // 沒點中方塊時恢復鏡頭旋轉
+            }
+        });
+
+        window.addEventListener('pointerup', (e) => {
+            controls.enableRotate = true; // 全面恢復鏡頭旋轉
+            if (!isPlayMode || isShuffling || !clickedCubie || !dragStartPoint) return;
+
+            const deltaX = e.clientX - dragStartPoint.x;
+            const deltaY = e.clientY - dragStartPoint.y;
+
+            if (Math.abs(deltaX) < 20 && Math.abs(deltaY) < 20) {
+                dragStartPoint = null;
+                clickedCubie = null;
+                return;
+            }
+
+            isShuffling = true;
+
+            // [終極修復：2D 螢幕投影預測比對法]
+            const localPoint = clickedPoint.clone();
+            modelInner.worldToLocal(localPoint);
+            const absX = Math.abs(localPoint.x);
+            const absY = Math.abs(localPoint.y);
+            const absZ = Math.abs(localPoint.z);
+
+            // 1. 找出被點擊的法線軸向 (Normal Axis)
+            let normalAxis = 'z';
+            if (absX > absY && absX > absZ) normalAxis = 'x';
+            else if (absY > absX && absY > absZ) normalAxis = 'y';
+
+            // 2. 決定這個面可以旋轉的兩個有效軸 (例如點擊 Z 面，只能繞 X 或 Y 軸旋轉)
+            let axesToTest = [];
+            if (normalAxis === 'x') axesToTest = ['y', 'z'];
+            else if (normalAxis === 'y') axesToTest = ['x', 'z'];
+            else axesToTest = ['x', 'y'];
+
+            // 3. 取得點擊點在螢幕上的 2D 基準座標 (NDC 空間)
+            const screenPoint = clickedPoint.clone().project(camera);
+
+            // 4. 計算函式：預測繞著某個軸旋轉一小步後，在螢幕上會產生什麼方向的像素位移
+            function getScreenVectorForAxis(axisName) {
+                const axisVector = new THREE.Vector3();
+                axisVector[axisName] = 1;
+                
+                // 微小旋轉造成的局部座標位移 (Displacement = Axis x LocalPoint)
+                const moveLocal = new THREE.Vector3().crossVectors(axisVector, localPoint).normalize().multiplyScalar(0.1);
+                const movedWorld = localPoint.clone().add(moveLocal);
+                modelInner.localToWorld(movedWorld);
+
+                const movedScreen = movedWorld.project(camera);
+                
+                // 轉換為實際的像素位移向量 (注意螢幕 Y 軸向下為正，需反轉)
+                return new THREE.Vector2(
+                    (movedScreen.x - screenPoint.x) * (window.innerWidth / 2),
+                    -(movedScreen.y - screenPoint.y) * (window.innerHeight / 2)
+                );
+            }
+
+            // 取得兩個可能旋轉軸的螢幕預測方向
+            const vec1 = getScreenVectorForAxis(axesToTest[0]);
+            const vec2 = getScreenVectorForAxis(axesToTest[1]);
+
+            // 玩家實際拖曳的像素向量
+            const dragVec = new THREE.Vector2(deltaX, deltaY);
+
+            // 5. 使用內積 (Dot Product) 比較拖曳向量與哪個預測向量最吻合
+            const dot1 = dragVec.dot(vec1);
+            const dot2 = dragVec.dot(vec2);
+
+            let axis, dir;
+            // 誰的絕對值大，代表玩家的拖曳軌跡與該軸的旋轉結果越相似
+            if (Math.abs(dot1) > Math.abs(dot2)) {
+                axis = axesToTest[0];
+                dir = dot1 > 0 ? 1 : -1;
+            } else {
+                axis = axesToTest[1];
+                dir = dot2 > 0 ? 1 : -1;
+            }
+
+            const angle = dir * (Math.PI / 2);
+
+            modelInner.updateMatrixWorld(true);
+
+            const targetBox = new THREE.Box3().setFromObject(clickedCubie);
+            const targetCenter = targetBox.getCenter(new THREE.Vector3());
+            modelInner.worldToLocal(targetCenter);
+            const targetVal = targetCenter[axis];
+
+            const cubies = [];
+            modelInner.traverse(child => { if (child.isMesh) cubies.push(child); });
+
+            const layerCubies = [];
+            cubies.forEach(c => {
+                const tempBox = new THREE.Box3().setFromObject(c);
+                const center = tempBox.getCenter(new THREE.Vector3());
+                modelInner.worldToLocal(center);
+                if (Math.abs(center[axis] - targetVal) < 0.2) {
+                    layerCubies.push(c);
+                }
+            });
+
+            const pivot = new THREE.Object3D();
+            modelInner.add(pivot);
+            pivot.updateMatrixWorld(true);
+
+            layerCubies.forEach(c => pivot.attach(c));
+
+            gsap.to(pivot.rotation, {
+                [axis]: angle,
+                duration: 0.3,
+                ease: "power2.inOut",
+                onComplete: () => {
+                    pivot.updateMatrixWorld(true);
+                    layerCubies.forEach(c => modelInner.attach(c));
+                    modelInner.remove(pivot);
+                    
+                    isShuffling = false;
+                    dragStartPoint = null;
+                    clickedCubie = null;
+                }
+            });
+        });
 
 
         // ================= 魔術方塊解謎洗牌邏輯 =================
@@ -1031,7 +1571,8 @@
                     pointerEvents: 'auto',
                     duration: 0.8,
                     ease: "power2.out"
-                })
+                });
+
                 // 與文字同步執行：西洋棋落下，加上 staggered 呈現節奏感
                 const pieces = document.querySelectorAll('.chess-piece');
                 pieces.forEach((piece, index) => {
@@ -1047,6 +1588,110 @@
                 });
         });
 
+        // ================= 計時器邏輯 =================
+        let timerInterval = null;
+        let startTime = 0;
+        let elapsedTime = 0;
+        let isTimerRunning = false;
+
+        const timerDisplay = document.getElementById('timer-display');
+        const timerMainBtn = document.getElementById('timer-main-btn');
+        const timerResetBtn = document.getElementById('timer-reset-btn');
+
+        function updateTimerDisplay() {
+            const now = Date.now();
+            const diff = now - startTime + elapsedTime;
+            
+            const m = Math.floor(diff / 60000);
+            const s = Math.floor((diff % 60000) / 1000);
+            const ms = Math.floor((diff % 1000) / 10);
+            
+            timerDisplay.innerText = 
+                `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}:${ms.toString().padStart(2, '0')}`;
+        }
+
+        timerMainBtn.addEventListener('click', () => {
+            if (!isTimerRunning) {
+                // 開始計時
+                isTimerRunning = true;
+                startTime = Date.now();
+                timerMainBtn.innerText = 'Pause the timer';
+                gsap.to(timerResetBtn, { opacity: 0, pointerEvents: 'none', duration: 0.3 });
+                
+                timerInterval = setInterval(updateTimerDisplay, 10);
+            } else {
+                // 暫停計時
+                isTimerRunning = false;
+                elapsedTime += Date.now() - startTime;
+                clearInterval(timerInterval);
+                timerMainBtn.innerText = 'Start the timer';
+                gsap.to(timerResetBtn, { opacity: 1, pointerEvents: 'auto', duration: 0.3 });
+            }
+        });
+
+        timerResetBtn.addEventListener('click', () => {
+            if (isTimerRunning) return;
+            elapsedTime = 0;
+            timerDisplay.innerText = '00:00:00';
+            gsap.to(timerResetBtn, { opacity: 0, pointerEvents: 'none', duration: 0.3 });
+        });
+
+        // ================= 遊玩模式：打塊互動核心 (略) =================
+        const scrambleBtn = document.getElementById('scramble-btn');
+        scrambleBtn.addEventListener('click', async () => {
+            if (isShuffling || !isPlayMode || !modelInner) return;
+            isShuffling = true;
+
+            const axes = ['x', 'y', 'z'];
+            const rotations = Math.floor(Math.random() * 6) + 15; // 15 到 20 次
+
+            // 找出所有的小方塊 Meshes
+            const cubies = [];
+            modelInner.traverse(child => { if (child.isMesh) cubies.push(child); });
+
+            for (let i = 0; i < rotations; i++) {
+                await new Promise((resolve) => {
+                    const axis = axes[Math.floor(Math.random() * axes.length)];
+                    const angle = (Math.random() > 0.5 ? 1 : -1) * (Math.PI / 2);
+
+                    modelInner.updateMatrixWorld(true);
+
+                    const positions = cubies.map(c => {
+                        const tempBox = new THREE.Box3().setFromObject(c);
+                        const center = tempBox.getCenter(new THREE.Vector3());
+                        modelInner.worldToLocal(center);
+                        return { cubie: c, val: center[axis] };
+                    });
+
+                    // 隨機選一層
+                    const randomCubie = positions[Math.floor(Math.random() * positions.length)];
+                    const randomVal = randomCubie.val;
+
+                    const layerCubies = positions
+                        .filter(p => Math.abs(p.val - randomVal) < 0.2)
+                        .map(p => p.cubie);
+
+                    const pivot = new THREE.Object3D();
+                    modelInner.add(pivot);
+                    pivot.updateMatrixWorld(true);
+                    layerCubies.forEach(c => pivot.attach(c));
+
+                    gsap.to(pivot.rotation, {
+                        [axis]: angle,
+                        duration: 0.1, // 快速轉動
+                        ease: "power2.inOut",
+                        onComplete: () => {
+                            pivot.updateMatrixWorld(true);
+                            layerCubies.forEach(c => modelInner.attach(c));
+                            modelInner.remove(pivot);
+                            resolve();
+                        }
+                    });
+                });
+            }
+            isShuffling = false;
+        });
+
         // ================= 點擊選單進入內容頁的序列式動畫 =================
         const menuItemsDOM = document.querySelectorAll('.menu-item');
         const topNav = document.getElementById('top-nav');
@@ -1056,12 +1701,35 @@
         let activePiece = null;
         let activeParent = null;
 
+        // ================= 頁面字典管理 =================
+        const pagesInfo = {
+            0: document.getElementById('resume-page'),
+            1: document.getElementById('graphic-page'),
+            2: document.getElementById('three-page'),
+            3: document.getElementById('project-page'),
+            4: document.getElementById('web-page')
+        };
+        let currentIdx = 0; // 當前所在的頁面索引
+
         // ================= 返回選單的修正邏輯 =================
         const menuReturnBtn = document.querySelector('.nav-btn[data-target="back"]');
         menuReturnBtn.addEventListener('click', (e) => {
             if (isShuffling || !activePiece) return;
             isShuffling = true;
             e.preventDefault();
+
+            // [新增]：讓當前正在顯示的頁面執行退場動畫，避免重疊
+            if (pagesInfo[currentIdx]) {
+                gsap.to(pagesInfo[currentIdx], { 
+                    opacity: 0, 
+                    y: -20, 
+                    duration: 0.4, 
+                    ease: "power2.in",
+                    onComplete: () => {
+                        pagesInfo[currentIdx].style.pointerEvents = 'none';
+                    }
+                });
+            }
 
             // 1. 核心修復：在建立 Timeline 之前，瞬間重置隱藏的棋子
             gsap.killTweensOf(activePiece);
@@ -1070,6 +1738,10 @@
             // 將棋子塞回原始父節點
             activeParent.insertBefore(activePiece, activeParent.firstChild);
             
+            // 🌟 移除替身元素
+            const placeholder = activeParent.querySelector('.chess-placeholder');
+            if (placeholder) placeholder.remove();
+
             // 拔除所有殘留屬性與視角
             activePiece.removeAttribute('style');
             activePiece.removeAttribute('camera-orbit');
@@ -1124,12 +1796,23 @@
 
             // 解除鎖定與恢復全域互通
             tl.add(() => {
-                menuItemsDOM.forEach(m => m.style.pointerEvents = 'auto');
+                menuItemsDOM.forEach(m => m.style.pointerEvents = '');
                 activePiece = null;
                 activeParent = null;
                 isShuffling = false;
             });
         });
+
+        const resumePage = document.getElementById('resume-page');
+
+        // 初始化行星旋轉動畫
+        gsap.to('#planet-orbit-1', { rotation: 360, duration: 15, repeat: -1, ease: "none" });
+        gsap.to('#planet-orbit-2', { rotation: 360, duration: 25, repeat: -1, ease: "none" });
+        gsap.to('#planet-orbit-3', { rotation: 360, duration: 20, repeat: -1, ease: "none" });
+        gsap.to('#planet-orbit-4', { rotation: 360, duration: 30, repeat: -1, ease: "none" });
+
+        // 修正：也要對小圓核心進行反向旋轉，確保它們不會跟著自轉，維持視覺穩定
+        gsap.to('.planet-core', { rotation: -360, duration: 20, repeat: -1, ease: "none" });
 
         menuItemsDOM.forEach((item, index) => {
             item.addEventListener('click', (e) => {
@@ -1158,6 +1841,14 @@
                 // 關閉所有選單互動
                 menuItemsDOM.forEach(m => m.style.pointerEvents = 'none');
 
+                // 🌟 建立透明替身撐住原本的空間，防止文字往上跳
+                const placeholder = document.createElement('div');
+                placeholder.style.width = rect.width + 'px';
+                placeholder.style.height = rect.height + 'px';
+                placeholder.style.marginBottom = '0.5rem'; // 必須對齊原本 .chess-piece 的 margin
+                placeholder.classList.add('chess-placeholder');
+                item.insertBefore(placeholder, clickedPiece);
+
                 gsap.set(clickedPiece, {
                     position: 'fixed',
                     left: rect.left,
@@ -1174,45 +1865,27 @@
                 const tl = gsap.timeline();
 
                 // 1. 退場：未點中的元素與斑馬線退場
-                // 讓斑馬線縮小退場
-                tl.to('.zebra-block', {
-                    scaleX: 0,
-                    duration: 0.8,
-                    ease: "power3.inOut"
-                }, 0);
-                
-                // 其他未點擊的 Menu items 與 BACK 按鈕淡出
-                tl.to([...siblings, '#back-btn'], {
-                    opacity: 0,
-                    duration: 0.6,
-                    ease: "power2.out"
-                }, 0);
-                
-                // 被點擊項目的文字也要淡出 (因為只有棋子要留著)
-                tl.to([item.querySelector('.en'), item.querySelector('.zh')], {
-                    opacity: 0,
-                    duration: 0.4,
-                }, 0);
+                tl.to('.zebra-block', { scaleX: 0, duration: 0.8, ease: "power3.inOut" }, 0);
+                tl.to([...siblings, '#back-btn'], { opacity: 0, duration: 0.6, ease: "power2.out" }, 0);
+                tl.to([item.querySelector('.en'), item.querySelector('.zh')], { opacity: 0, duration: 0.4 }, 0);
 
-                // 2. 棋子 Solo 動畫 (移動到左側、向上轉向並且加入景深霧化)
+                // 2. 棋子 Solo 動畫
                 tl.to(clickedPiece, {
-                    left: '20vw',      // 移動到畫面左側
-                    top: '50vh',       // 畫面中央
+                    left: '20vw',
+                    top: '50vh',
                     xPercent: -50,
                     yPercent: -50,
-                    scale: 2.5,        // 放大
-                    filter: "blur(1.5px)", // 霧化效果減半 (微距景深感)
+                    scale: 2.5,
+                    filter: "blur(1.5px)",
                     duration: 0.8,
                     ease: "power3.inOut",
                     onUpdate: function() {
-                        // GSAP 的 progress 0~1，將 0~90 度漸變
                         const p = this.progress();
                         clickedPiece.setAttribute('camera-orbit', `${90 * p}deg 90deg auto`);
                     }
-                }, 0.2); // 稍微延遲讓背景先退場
+                }, 0.2);
 
                 // 3. 文字滑入與消散序列
-                // 準備文字內容並設定起始位置 (從右方滑入)
                 tl.add(() => {
                     titleContainer.innerHTML = `<div class="en-title">${enText}</div><div class="zh-title">${zhText}</div>`;
                 }, "-=0.4");
@@ -1220,21 +1893,13 @@
                 tl.fromTo(titleContainer, 
                     { x: 50, opacity: 0 },
                     { x: 0, opacity: 1, duration: 0.6, ease: "power2.out" },
-                    "-=0.2" // 和棋子抵達目標位置時同步開始
+                    "-=0.2"
                 );
 
-                // 停留 1 秒鐘
                 tl.to({}, { duration: 1 });
 
-                // 文字反向滑出
-                tl.to(titleContainer, {
-                    x: -50,
-                    opacity: 0,
-                    duration: 0.6,
-                    ease: "power2.in"
-                });
+                tl.to(titleContainer, { x: -50, opacity: 0, duration: 0.6, ease: "power2.in" });
 
-                // 棋子淡出並隱藏，不移除以便返回
                 tl.to(clickedPiece, {
                     opacity: 0,
                     duration: 0.6,
@@ -1246,18 +1911,72 @@
                     }
                 }, "<");
 
-                // 4. 導覽列進場
+                // 4. 內容區進場 (利用字典自動判斷通用的進場邏輯)
+                const targetPage = pagesInfo[index];
+                if (targetPage) {
+                    currentIdx = index; // 更新當前索引
+                    tl.fromTo(targetPage, 
+                        { opacity: 0, y: 30 },
+                        { opacity: 1, y: 0, pointerEvents: 'auto', duration: 0.8, ease: "power2.out" }
+                    );
+                }
+
+                // 5. 導覽列進場
                 tl.to(navBtns, {
                     opacity: 1,
-                    stagger: 0.1, // 依序浮現
+                    stagger: 0.1,
                     duration: 0.5,
                     ease: "power2.out",
                     onComplete: () => {
-                        // 開啟導覽列互動
                         topNav.style.pointerEvents = 'auto';
-                        isShuffling = false; // 解除防連點鎖定
+                        isShuffling = false;
                     }
                 });
+            });
+        });
+
+        // ================= 導覽列按鈕切換內容邏輯 =================
+
+        navBtns.forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const target = btn.getAttribute('data-target');
+                if (target === 'back') return;
+                
+                const targetIdx = parseInt(target);
+                if (targetIdx === currentIdx) return; // 點擊同頁不重複觸發
+
+                // 1. 建立切換時間軸
+                const tl = gsap.timeline();
+
+                // 2. 淡出目前頁面
+                const currentPage = pagesInfo[currentIdx];
+                if (currentPage) {
+                    tl.to(currentPage, { 
+                        opacity: 0, 
+                        y: -20, 
+                        duration: 0.4, 
+                        ease: "power2.in",
+                        onComplete: () => {
+                            currentPage.style.pointerEvents = 'none';
+                        }
+                    });
+                }
+
+                // 3. 切換 Active 狀態並更新索引
+                tl.add(() => {
+                    navBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                });
+
+                // 4. 淡入新頁面
+                const nextPage = pagesInfo[targetIdx];
+                if (nextPage) {
+                    currentIdx = targetIdx; // 更新索引
+                    tl.fromTo(nextPage, 
+                        { opacity: 0, y: 20 }, 
+                        { opacity: 1, y: 0, pointerEvents: 'auto', duration: 0.6, ease: "power2.out" }
+                    );
+                }
             });
         });
 
@@ -1267,8 +1986,42 @@
             if (isShuffling) return; // 鎖定判定
             isShuffling = true;
 
+            // 處理遊玩模式下點擊返回
+            if (isPlayMode) {
+                isPlayMode = false;
+                isShuffling = true;
+
+                gsap.to('#back-btn', { opacity: 0, pointerEvents: 'none', duration: 0.4, ease: "power2.out" });
+                gsap.to('#scramble-btn', { opacity: 0, x: -20, pointerEvents: 'none', duration: 0.4 });
+                gsap.to('#timer-container', { opacity: 0, y: 20, pointerEvents: 'none', duration: 0.4 });
+                gsap.to('.start-btn-container', { opacity: 1, pointerEvents: 'auto', duration: 0.4, ease: "power2.out" });
+                gsap.to(particlesGroup.material, { opacity: 0.5, duration: 0.5 });
+
+                // 反向翻轉動畫
+                const targetRotationY = loadedModel.rotation.y - Math.PI;
+                gsap.to(loadedModel.rotation, {
+                    y: targetRotationY,
+                    x: 0,
+                    z: 0,
+                    duration: 0.5,
+                    ease: "power2.inOut",
+                    onUpdate: function() {
+                        if (this.progress() >= 0.5 && modelInner !== bwCube) {
+                            colorCube.visible = false;
+                            bwCube.visible = true;
+                            modelInner = bwCube;
+                        }
+                    },
+                    onComplete: () => {
+                        isShuffling = false;
+                    }
+                });
+                return;
+            }
+
             // 1. 隱藏文字與按鈕
             gsap.to(['#menu-content', '#back-btn'], { opacity: 0, pointerEvents: 'none', duration: 0.4, ease: "power2.out" });
+            menuItemsDOM.forEach(m => m.style.pointerEvents = '');
 
             // 關閉所有的棋子旋轉狀態，確保下次打開選單時是乖乖落下後才開始轉
             document.querySelectorAll('.chess-piece').forEach(p => p.autoRotate = false);
