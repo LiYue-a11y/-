@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>黑白切換雛形網站 - Three.js 版</title>
+    <title>LIYUE's portfolio</title>
+    <link rel="icon" type="image/svg+xml" href="LOGO.svg">
 
     <!-- 載入 GSAP 動畫引擎 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -364,8 +365,19 @@
             border-bottom: 1px solid var(--text-color);
         }
 
-        /* 1. 隱藏全網頁預設游標 */
-        * {
+        /* 1. 針對主體與互動元素隱藏預設游標，釋放捲軸區 */
+        body,
+        button,
+        a,
+        label,
+        input,
+        .menu-item,
+        .nav-btn,
+        .chess-piece,
+        .scramble-btn,
+        .timer-btn,
+        .start-btn,
+        .back-btn {
             cursor: none !important;
         }
 
@@ -378,7 +390,8 @@
             pointer-events: none;
             /* 確保準心置中 */
             transform: translate(-50%, -50%);
-            width: 24px; /* 整體縮小 1/4 (由 32px 變為 24px) */
+            width: 24px;
+            /* 整體縮小 1/4 (由 32px 變為 24px) */
             height: auto;
             display: flex;
             justify-content: center;
@@ -393,20 +406,27 @@
 
         /* 顏色連動（關鍵） */
         .custom-cursor svg path {
-            fill: #1a1a1a;   /* 預設（淺色模式）下為深色 */
-            stroke: #ffffff; /* 預設（淺色模式）下為白色 */
-            
+            fill: #1a1a1a;
+            /* 預設（淺色模式）下為深色 */
+            stroke: #ffffff;
+            /* 預設（淺色模式）下為白色 */
+
             /* 【主要修改】：讓外框線向外長 */
-            stroke-width: 4px;         /* 寬度加倍，因為其中一半會被 fill 覆蓋 */
-            paint-order: stroke fill;  /* 關鍵！告訴瀏覽器「先畫線條，再塗滿顏色」，這會讓顏色蓋住往內長的線條 */
-            stroke-linejoin: round;    /* 讓線條轉折處圓滑，避免外框產生奇怪的尖刺 */
-            
+            stroke-width: 4px;
+            /* 寬度加倍，因為其中一半會被 fill 覆蓋 */
+            paint-order: stroke fill;
+            /* 關鍵！告訴瀏覽器「先畫線條，再塗滿顏色」，這會讓顏色蓋住往內長的線條 */
+            stroke-linejoin: round;
+            /* 讓線條轉折處圓滑，避免外框產生奇怪的尖刺 */
+
             transition: all 0.4s ease;
         }
 
         [data-theme="dark"] .custom-cursor svg path {
-            fill: #ffffff;   /* 當啟動深色模式時：fill 為白色 */
-            stroke: #1a1a1a; /* stroke 為深色 */
+            fill: #ffffff;
+            /* 當啟動深色模式時：fill 為白色 */
+            stroke: #1a1a1a;
+            /* stroke 為深色 */
         }
 
         /* =============== 內頁轉場新增區段 =============== */
@@ -422,7 +442,7 @@
         }
 
         .nav-btn {
-            background: transparent;
+            background: var(--bg-color);
             color: var(--text-color);
             border: 1px solid var(--text-color);
             padding: 0.5rem 1.25rem;
@@ -432,11 +452,14 @@
             font-weight: 600;
             letter-spacing: 0.1em;
             cursor: pointer;
-            transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
-                        color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                        box-shadow 0.4s ease; /* 新增陰影的動畫讓加粗效果更自然 */
-            opacity: 0; /* 起始隱藏，等待 GSAP 動畫進場 */
-            pointer-events: auto; /* 雖然 container 把 events 關掉了但在啟動後這裡要能點 */
+            transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.4s ease;
+            /* 新增陰影的動畫讓加粗效果更自然 */
+            opacity: 0;
+            /* 起始隱藏，等待 GSAP 動畫進場 */
+            pointer-events: auto;
+            /* 雖然 container 把 events 關掉了但在啟動後這裡要能點 */
         }
 
         .nav-btn:hover {
@@ -453,7 +476,8 @@
         #title-container {
             position: absolute;
             top: 50%;
-            left: 55%; /* 偏右對齊 */
+            left: 55%;
+            /* 偏右對齊 */
             transform: translateY(-50%);
             display: flex;
             flex-direction: column;
@@ -461,7 +485,8 @@
             z-index: 35;
             color: var(--text-color);
             pointer-events: none;
-            opacity: 0; /* 起始隱藏 */
+            opacity: 0;
+            /* 起始隱藏 */
         }
 
         #title-container .en-title {
@@ -500,6 +525,94 @@
             gap: 8vw;
         }
 
+        /* 內容容器特定頁面強化：滾動支援 */
+        #resume-page,
+        #graphic-page,
+        #three-page,
+        #project-page,
+        #web-page {
+            display: block;
+            /* 允許垂直堆疊內容 */
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            padding: 0;
+            /* 內部區塊自行控制 padding */
+            scrollbar-width: thin;
+            scrollbar-color: var(--text-color) transparent;
+        }
+
+        #resume-page::-webkit-scrollbar,
+        #graphic-page::-webkit-scrollbar,
+        #three-page::-webkit-scrollbar,
+        #project-page::-webkit-scrollbar,
+        #web-page::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #resume-page::-webkit-scrollbar-track,
+        #graphic-page::-webkit-scrollbar-track,
+        #three-page::-webkit-scrollbar-track,
+        #project-page::-webkit-scrollbar-track,
+        #web-page::-webkit-scrollbar-track {
+            background: transparent;
+            /* 利用 border 模擬上下 margin，讓捲軸不頂到邊緣 */
+            border-top: 15vh solid transparent;
+            border-bottom: 15vh solid transparent;
+        }
+
+        #resume-page::-webkit-scrollbar-thumb,
+        #graphic-page::-webkit-scrollbar-thumb,
+        #three-page::-webkit-scrollbar-thumb,
+        #project-page::-webkit-scrollbar-thumb,
+        #web-page::-webkit-scrollbar-thumb {
+            background-color: var(--text-color);
+            border-radius: 10px;
+            opacity: 0.5;
+        }
+
+        .resume-hero {
+            position: relative; /* 新增：讓內部的絕對定位箭頭參考此容器 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100vh;
+            gap: 8vw;
+            padding: 0 10%;
+            box-sizing: border-box;
+            flex-shrink: 0;
+        }
+
+        /* 向下指示箭頭樣式 */
+        .scroll-indicator {
+            position: absolute;
+            right: 15%; /* 🟢 將 5% 改為 15%，讓箭頭往左移回空白處中間 */
+            top: 50%;   /* 🟢 將 65% 改為 50%，讓箭頭垂直置中對齊文字區塊 */
+            transform: translateY(-50%);
+            z-index: 45;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .scroll-indicator svg {
+            width: 32px;
+            height: 32px;
+            animation: arrow-float 2s infinite ease-in-out;
+        }
+
+        @keyframes arrow-float {
+            0%, 100% {
+                transform: translateY(0);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translateY(20px);
+                opacity: 1;
+            }
+        }
+
         /* 打亂按鈕樣式 */
         .scramble-btn {
             position: absolute;
@@ -509,17 +622,19 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            padding: 1rem 2rem; /* 稍微增加左右 padding 以配合圓角 */
+            padding: 1rem 2rem;
+            /* 稍微增加左右 padding 以配合圓角 */
             border: 1px solid var(--text-color);
             background: transparent;
-            border-radius: 999px; /* 左右半圓倒角 */
+            border-radius: 999px;
+            /* 左右半圓倒角 */
             cursor: pointer;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
-                        transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-                        background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                        color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             font-family: 'Inter', sans-serif;
             z-index: 45;
         }
@@ -555,8 +670,8 @@
             z-index: 50;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
-                        transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .timer-display {
@@ -565,7 +680,8 @@
             font-weight: 600;
             color: var(--text-color);
             letter-spacing: 1px;
-            min-width: 140px; /* 防止寬度跳動 */
+            min-width: 140px;
+            /* 防止寬度跳動 */
             text-align: center;
         }
 
@@ -599,7 +715,553 @@
             pointer-events: none;
             transition: opacity 0.4s ease;
         }
-        /* 個人履歷頁面樣式 */
+
+        /* 技能區塊樣式 */
+        .resume-skills {
+            width: 100%;
+            height: 100vh;
+            padding: 8vh 10%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 3vh;
+            background-color: var(--bg-color);
+            /* 讓背景變色與 body 同步，消除切換時的動畫斷層 */
+            transition: background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .skills-title {
+            font-size: clamp(1.2rem, 2vw, 1.8rem);
+            font-weight: 300;
+            letter-spacing: 0.5em;
+            text-transform: uppercase;
+            margin-bottom: 1vh;
+            opacity: 0.6;
+            border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+            padding-bottom: 1rem;
+        }
+
+        .skill-item {
+            display: flex;
+            align-items: center;
+            gap: 5vw;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        /* 新增：技能區塊左右佈局與自傳視窗 */
+        .skills-wrapper {
+            display: flex;
+            align-items: stretch; /* 強迫左右對齊高度 */
+            gap: 6vw;
+            width: 100%;
+            flex: 1; /* 關鍵：佔用剩餘空間 */
+            min-height: 0; /* 關鍵：防止內容撐開高度 */
+        }
+
+        .skills-left {
+            flex: 1.2;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* 平均分配間距，上下對齊 */
+        }
+
+        .skills-right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0; /* 關鍵：允許 Flex 子項縮小，鎖定高度不被內容撐開 */
+        }
+
+        .bio-window {
+            background: rgba(128, 128, 128, 0.05);
+            border: 1px solid rgba(128, 128, 128, 0.15);
+            border-radius: 24px;
+            padding: 2.2rem;
+            flex: 1;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--text-color) transparent;
+            position: relative; /* 確保按鈕定位基準 */
+        }
+
+        .bio-window::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .bio-window::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .bio-window::-webkit-scrollbar-thumb {
+            background: var(--text-color);
+            border-radius: 10px;
+        }
+
+        .bio-text {
+            font-size: 0.95rem;
+            line-height: 1.85;
+            letter-spacing: 0.05em;
+            opacity: 0.85;
+            padding-top: 1.2rem; /* 增加頂部留白避免文字與右上角按鈕重疊 */
+        }
+
+        .bio-text p {
+            margin-bottom: 1.5rem;
+        }
+
+        .bio-text p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* 自傳語言切換按鈕 */
+
+        .lang-toggle-btn {
+            position: absolute;
+            top: 1rem; /* 調小定位距離 */
+            right: 1.2rem;
+            background: transparent;
+            border: 1px solid var(--text-color);
+            color: var(--text-color);
+            padding: 0.25rem 0.6rem; /* 縮小內距 */
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem; /* 縮小字體 */
+            font-weight: 600;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .lang-toggle-btn:hover {
+            background: var(--text-color);
+            color: var(--bg-color);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .skill-logo {
+            width: 55px;
+            height: 55px;
+            flex-shrink: 0;
+        }
+
+        .skill-data {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .skill-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .skill-name {
+            font-size: 1.1rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        .skill-percent {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            opacity: 0.5;
+        }
+
+        .skill-bar-track {
+            width: 100%;
+            height: 1px;
+            background: rgba(128, 128, 128, 0.2);
+            position: relative;
+        }
+
+        .skill-bar-fill {
+            position: absolute;
+            top: -1px;
+            left: 0;
+            height: 3px;
+            background: var(--text-color);
+            width: 0;
+            /* JS 控制進場動畫 */
+            transition: width 2s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        /* 平面設計頁面樣式 */
+        .graphic-container {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12vh 0 15vh;
+            box-sizing: border-box;
+            background-color: var(--bg-color);
+            transition: background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .graphic-header {
+            text-align: center;
+            margin-bottom: 6rem;
+            color: var(--text-color);
+        }
+
+        .graphic-header h1 {
+            font-size: clamp(2rem, 3.5vw, 3.5rem);
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 0.8rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .graphic-header .zh-sub {
+            font-size: 1.15rem;
+            font-weight: 500;
+            letter-spacing: 0.4em;
+            opacity: 0.7;
+        }
+
+        .poster-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 5vw;
+            width: 100%;
+            max-width: 1200px;
+            padding: 0 8%;
+            box-sizing: border-box;
+        }
+
+        .poster-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .poster-img-wrapper {
+            width: 100%;
+            aspect-ratio: 5 / 7;
+            background: #ffffff;
+            /* 針對白底海報強化陰影與邊框 */
+            border: 1px solid rgba(128, 128, 128, 0.1);
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.12), 
+                0 10px 20px rgba(0, 0, 0, 0.08),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.5); /* 內發光增加層次感 */
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 2.2rem;
+            transition: transform 0.6s cubic-bezier(0.2, 1, 0.3, 1), box-shadow 0.6s ease;
+        }
+
+        .poster-item:hover .poster-img-wrapper {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 45px 80px rgba(0, 0, 0, 0.18);
+        }
+
+        .poster-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .poster-info {
+            color: var(--text-color);
+        }
+
+        .poster-info .poster-en {
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .poster-info .poster-zh {
+            font-size: 0.95rem;
+            font-weight: 500;
+            letter-spacing: 0.2em;
+            opacity: 0.8;
+            margin-bottom: 0.8rem;
+        }
+
+        .poster-info .poster-desc {
+            font-size: 0.85rem;
+            opacity: 0.5;
+            letter-spacing: 0.05em;
+            font-weight: 300;
+        }
+
+        /* 統一作品卡片樣式 (.shadow-box) */
+        .graphic-img-card {
+            width: 100%;
+            background: #ffffff;
+            border: 1px solid rgba(128, 128, 128, 0.1);
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.1), 
+                inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.6s cubic-bezier(0.2, 1, 0.3, 1), box-shadow 0.6s ease;
+        }
+
+        .graphic-img-card:hover {
+            transform: translateY(-12px) scale(1.01);
+            box-shadow: 0 40px 70px rgba(0, 0, 0, 0.15);
+        }
+
+        .graphic-img-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+
+        /* 專案區塊通通用樣式 */
+        .graphic-section {
+            width: 100%;
+            max-width: 1200px;
+            padding: 0 8%;
+            box-sizing: border-box;
+            margin-bottom: 25vh; /* 區塊間距 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .graphic-desc {
+            max-width: 850px;
+            text-align: center;
+            font-size: 0.95rem;
+            line-height: 2;
+            letter-spacing: 0.08em;
+            opacity: 0.7;
+            margin-bottom: 5rem;
+            color: var(--text-color);
+            word-break: break-all;
+        }
+
+        /* 月曆設計與教科書設計特定網格 */
+        .calendar-hero,
+        .calendar-grid,
+        .textbook-grid,
+        .tri-grid,
+        .vertical-stack-grid,
+        .quad-grid {
+            display: grid;
+            gap: 4vw;
+            width: 100%;
+        }
+
+        .calendar-hero,
+        .calendar-grid,
+        .textbook-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .tri-grid {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3vw;
+        }
+
+        .vertical-stack-grid {
+            grid-template-columns: 1fr;
+            max-width: 1000px;
+            gap: 6vh;
+        }
+
+        .quad-grid {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5vw; /* 稍微縮小間距以適應四欄 */
+        }
+
+        /* 實務專案大尺寸網格樣式 */
+        .project-large-section {
+            max-width: 1600px !important;
+            padding: 0 4% !important;
+        }
+
+        .project-large-grid {
+            max-width: 1600px !important;
+            gap: 3vw !important;
+            padding: 0 !important;
+        }
+
+        /* 實務專案 Hero 區塊 (左圖右字) */
+        .project-hero {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8vw;
+            width: 100%;
+            max-width: 1400px;
+            margin-bottom: 12vh;
+            padding: 0 4%;
+            box-sizing: border-box;
+        }
+
+        .project-hero-left {
+            flex: 1;
+            max-width: 550px;
+        }
+
+        .project-hero-right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .calendar-hero {
+            margin-bottom: 4vw;
+        }
+
+        .textbook-grid .full-width {
+            grid-column: span 2;
+        }
+
+        .sub-project-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            margin-top: 5vh;
+            color: var(--text-color);
+        }
+
+        .sub-project-header h2 {
+            font-size: clamp(1.2rem, 2vw, 1.8rem);
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 0.4rem;
+        }
+
+        .sub-project-header .zh-sub {
+            font-size: 0.9rem;
+            opacity: 0.6;
+            letter-spacing: 0.25em;
+        }
+
+        /* 3D作品頁面樣式 */
+        .three-container {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: var(--bg-color);
+            transition: background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* 3D 作品開頭 Hero 樣式 */
+        .three-hero {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 10%;
+            box-sizing: border-box;
+            gap: 8vw;
+        }
+
+        .three-hero-left {
+            flex: 1.2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .three-hero-right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: var(--text-color);
+        }
+
+        .three-hero-title {
+            font-size: clamp(2.5rem, 4.5vw, 4.5rem);
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+        }
+
+        .three-hero-zh {
+            font-size: clamp(1.2rem, 2vw, 2.2rem);
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            opacity: 0.8;
+            margin-bottom: 2rem;
+        }
+
+        .three-hero-sub {
+            font-size: 1.1rem;
+            font-weight: 400;
+            letter-spacing: 0.1em;
+            opacity: 0.6;
+            text-transform: uppercase;
+            border-left: 2px solid var(--text-color);
+            padding-left: 1.5rem;
+        }
+
+        .three-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12vh;
+            width: 100%;
+            padding: 10vh 10% 25vh;
+            box-sizing: border-box;
+        }
+
+        .three-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+        }
+
+        .three-img-card {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #ffffff;
+            border: 1px solid rgba(128, 128, 128, 0.1);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 2.5rem;
+            transition: transform 0.6s cubic-bezier(0.2, 1, 0.3, 1), box-shadow 0.6s ease;
+        }
+
+        .three-item:hover .three-img-card {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 45px 80px rgba(0, 0, 0, 0.18);
+        }
+
+        .three-img-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .three-info {
+            color: var(--text-color);
+        }
+
+        .three-info .three-en {
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
         .resume-container {
             position: absolute;
             top: 0;
@@ -621,7 +1283,8 @@
         /* 左側：圖片與行星軌道 */
         .resume-left {
             position: relative;
-            flex: 0 0 540px; /* 稍微放大容器寬度以容納大圓 */
+            flex: 0 0 540px;
+            /* 稍微放大容器寬度以容納大圓 */
             height: 540px;
             display: flex;
             justify-content: center;
@@ -630,23 +1293,30 @@
 
         .main-circle-a {
             position: absolute;
-            width: 475px; /* 380 * 1.25 */
+            width: 475px;
+            /* 380 * 1.25 */
             height: 475px;
             background-color: var(--text-color);
             border-radius: 50%;
             z-index: 1;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
             transition: background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
+            /* 硬體加速 */
         }
 
         .resume-photo {
             position: relative;
-            width: 375px; /* 300 * 1.25 */
-            height: 500px; /* 400 * 1.25 */
+            width: 375px;
+            /* 300 * 1.25 */
+            height: 500px;
+            /* 400 * 1.25 */
             object-fit: cover;
             border-radius: 24px;
             z-index: 5;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            will-change: transform;
+            /* 硬體加速 */
         }
 
         /* 行星軌道系統 */
@@ -662,7 +1332,8 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 100px; /* 控制旋轉半徑的容器 */
+            width: 100px;
+            /* 控制旋轉半徑的容器 */
             height: 100px;
             display: flex;
             justify-content: center;
@@ -698,6 +1369,7 @@
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
+            will-change: transform;
         }
 
         .name-row {
@@ -707,7 +1379,8 @@
         }
 
         .name-en {
-            font-size: clamp(2rem, 3.3vw, 3.7rem); /* (3~5.5) * 0.66 */
+            font-size: clamp(2rem, 3.3vw, 3.7rem);
+            /* (3~5.5) * 0.66 */
             font-weight: 200;
             letter-spacing: 0.1em;
             text-transform: uppercase;
@@ -715,7 +1388,8 @@
         }
 
         .name-zh {
-            font-size: 1.2rem; /* 1.8 * 0.66 */
+            font-size: 1.2rem;
+            /* 1.8 * 0.66 */
             font-weight: 500;
             letter-spacing: 0.3em;
             opacity: 0.8;
@@ -742,6 +1416,66 @@
             letter-spacing: 0.05em;
             opacity: 0.9;
         }
+
+        /* ========== 新增：Loading 畫面極簡樣式 ========== */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #121212;
+            /* 採用 B&W 高質感深色底 */
+            z-index: 100000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .loading-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.2rem;
+        }
+
+        .loading-title {
+            font-size: 0.75rem;
+            letter-spacing: 0.6em;
+            font-weight: 300;
+            opacity: 0.8;
+            text-transform: uppercase;
+        }
+
+        .loading-bar-container {
+            width: 200px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #loading-bar-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            background: #ffffff;
+            /* 使用 cubic-bezier 讓進度條跑起來更有彈性 */
+            transition: width 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        #loading-count {
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            font-weight: 400;
+            opacity: 0.4;
+            font-family: 'JetBrains Mono', monospace;
+        }
     </style>
 
     <script type="importmap">
@@ -756,13 +1490,26 @@
 
 <body>
 
+    <!-- 新增：全螢幕 Loading 畫面結構 -->
+    <div id="loading-screen">
+        <div class="loading-content">
+            <div class="loading-title">Initializing Experience</div>
+            <div class="loading-bar-container">
+                <div id="loading-bar-fill"></div>
+            </div>
+            <div id="loading-count">0%</div>
+        </div>
+    </div>
+
+
     <!-- 1. HTML 結構 (Inline SVG 關鍵) -->
     <div class="custom-cursor">
         <svg id="_圖層_1" data-name="圖層 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75.57 113.78">
-            <path d="M60.26,29.72c-.04-.24-.29-.36-.49-.47-.52-.21-1.07-.35-1.62-.47,1.18,.28,1.93,.6,2.1,.94Z"/>
-            <path d="M75.57,96.73c-.42-.91-2.68-1.55-5.51-2.01,3.16,.57,5.17,1.24,5.51,2.01Z"/>
-            <path d="M57.12,99.93c-5.46,.26-10.92,.36-16.39,.34,1.03-2.52,2.33-4.89,3.88-7.08,4.17,.03,8.35,.13,12.51,.33,1.94,.18,8.22,.44,12.94,1.2-5.67-1.02-15.04-1.71-25.12-2,6.51-8.92,17.03-14.72,28.92-14.72-12.58,0-23.65-23.61-30.02-45.87,8.59-.38,15.91-1.26,16.42-2.4-1.47,1.39-8.5,1.97-16.53,2.02-.38-1.35-.75-2.69-1.1-4.02,4.12,0,8.23,.13,12.32,.58,1.06,.14,2.15,.26,3.2,.49-3.07-.74-9.07-1.28-15.65-1.53-2.82-10.9-4.43-21.01-4.43-27.26,0,6.22-1.59,16.27-4.39,27.11-9.87,.04-18.64,.81-18.39,2.62-.19,1.73,7.72,2.51,16.96,2.61-6.39,22.2-17.42,45.67-29.97,45.67,11.83,0,22.31,5.74,28.82,14.58C14.66,92.72-.06,94.01,0,96.73c.01,2.99,17.52,4.23,35.68,4.15,1.55,4,2.41,8.35,2.41,12.9,0-4.57,.87-8.93,2.43-12.95,13.26-.23,26.06-1.14,31.86-2.57-.35,.08-.7,.15-1.05,.22-4.69,.85-9.45,1.17-14.2,1.46ZM16.85,29.73c3.19-1.06,6.66-1.13,10-1.44,2.21-.16,4.42-.28,6.64-.37-.31,1.19-.64,2.39-.98,3.6-7.18-.34-13.48-1-15.65-1.78Zm2.22,69.78c-4.73-.33-9.47-.69-14.12-1.58-1.25-.28-2.6-.49-3.67-1.18-.02,0-.02-.02-.03-.02,.01,0,.02-.02,.03-.02,1.06-.68,2.42-.89,3.67-1.17,4.65-.89,9.39-1.25,14.12-1.58,4.19-.28,8.39-.47,12.6-.6,1.48,2.13,2.74,4.43,3.74,6.86-5.45-.11-10.9-.34-16.34-.7Z"/>
-            <path d="M72.37,98.25c.81-.18,1.62-.4,2.38-.74,.33-.18,.75-.38,.82-.79-.21,.56-1.35,1.07-3.2,1.53Z"/>
+            <path d="M60.26,29.72c-.04-.24-.29-.36-.49-.47-.52-.21-1.07-.35-1.62-.47,1.18,.28,1.93,.6,2.1,.94Z" />
+            <path d="M75.57,96.73c-.42-.91-2.68-1.55-5.51-2.01,3.16,.57,5.17,1.24,5.51,2.01Z" />
+            <path
+                d="M57.12,99.93c-5.46,.26-10.92,.36-16.39,.34,1.03-2.52,2.33-4.89,3.88-7.08,4.17,.03,8.35,.13,12.51,.33,1.94,.18,8.22,.44,12.94,1.2-5.67-1.02-15.04-1.71-25.12-2,6.51-8.92,17.03-14.72,28.92-14.72-12.58,0-23.65-23.61-30.02-45.87,8.59-.38,15.91-1.26,16.42-2.4-1.47,1.39-8.5,1.97-16.53,2.02-.38-1.35-.75-2.69-1.1-4.02,4.12,0,8.23,.13,12.32,.58,1.06,.14,2.15,.26,3.2,.49-3.07-.74-9.07-1.28-15.65-1.53-2.82-10.9-4.43-21.01-4.43-27.26,0,6.22-1.59,16.27-4.39,27.11-9.87,.04-18.64,.81-18.39,2.62-.19,1.73,7.72,2.51,16.96,2.61-6.39,22.2-17.42,45.67-29.97,45.67,11.83,0,22.31,5.74,28.82,14.58C14.66,92.72-.06,94.01,0,96.73c.01,2.99,17.52,4.23,35.68,4.15,1.55,4,2.41,8.35,2.41,12.9,0-4.57,.87-8.93,2.43-12.95,13.26-.23,26.06-1.14,31.86-2.57-.35,.08-.7,.15-1.05,.22-4.69,.85-9.45,1.17-14.2,1.46ZM16.85,29.73c3.19-1.06,6.66-1.13,10-1.44,2.21-.16,4.42-.28,6.64-.37-.31,1.19-.64,2.39-.98,3.6-7.18-.34-13.48-1-15.65-1.78Zm2.22,69.78c-4.73-.33-9.47-.69-14.12-1.58-1.25-.28-2.6-.49-3.67-1.18-.02,0-.02-.02-.03-.02,.01,0,.02-.02,.03-.02,1.06-.68,2.42-.89,3.67-1.17,4.65-.89,9.39-1.25,14.12-1.58,4.19-.28,8.39-.47,12.6-.6,1.48,2.13,2.74,4.43,3.74,6.86-5.45-.11-10.9-.34-16.34-.7Z" />
+            <path d="M72.37,98.25c.81-.18,1.62-.4,2.38-.74,.33-.18,.75-.38,.82-.79-.21,.56-1.35,1.07-3.2,1.53Z" />
         </svg>
     </div>
 
@@ -826,68 +1573,659 @@
 
         <!-- 內容頁面區塊 -->
         <div class="content-container ui-element" id="resume-page">
-            <div class="resume-left">
-                <div class="main-circle-a"></div>
-                <!-- 圖片 -->
-                <img src="img/myphoto.jpg" alt="LiYue" class="resume-photo">
-                
-                <!-- 行星系統 (內切圓精密定位) -->
-                <!-- 圓 1 (Solid): 直徑 100px, 偏移 = 237.5 - 50 = 187.5px -->
-                <div class="planet-orbit" id="planet-orbit-1">
-                    <div class="planet" style="width: 100px; height: 100px; transform: translate(-50%, -50%) rotate(0deg) translateX(187.5px);">
-                        <div class="planet-core solid"></div>
+            <!-- 第一屏：Hero Section -->
+            <div class="resume-hero">
+                <div class="resume-left">
+                    <div class="main-circle-a"></div>
+                    <!-- 圖片 -->
+                    <img src="img/myphoto.jpg" alt="LiYue" class="resume-photo">
+
+                    <!-- 行星系統 -->
+                    <div class="planet-orbit" id="planet-orbit-1">
+                        <div class="planet"
+                            style="width: 100px; height: 100px; transform: translate(-50%, -50%) rotate(0deg) translateX(187.5px);">
+                            <div class="planet-core solid"></div>
+                        </div>
+                    </div>
+                    <div class="planet-orbit" id="planet-orbit-2">
+                        <div class="planet"
+                            style="width: 80px; height: 80px; transform: translate(-50%, -50%) rotate(90deg) translateX(197.5px);">
+                            <div class="planet-core hollow"></div>
+                        </div>
+                    </div>
+                    <div class="planet-orbit" id="planet-orbit-3">
+                        <div class="planet"
+                            style="width: 60px; height: 60px; transform: translate(-50%, -50%) rotate(180deg) translateX(207.5px);">
+                            <div class="planet-core solid"></div>
+                        </div>
+                    </div>
+                    <div class="planet-orbit" id="planet-orbit-4">
+                        <div class="planet"
+                            style="width: 40px; height: 40px; transform: translate(-50%, -50%) rotate(270deg) translateX(217.5px);">
+                            <div class="planet-core hollow"></div>
+                        </div>
                     </div>
                 </div>
-                <!-- 圓 2 (Hollow): 直徑 80px, 偏移 = 237.5 - 40 = 197.5px -->
-                <div class="planet-orbit" id="planet-orbit-2">
-                    <div class="planet" style="width: 80px; height: 80px; transform: translate(-50%, -50%) rotate(90deg) translateX(197.5px);">
-                        <div class="planet-core hollow"></div>
+
+                <div class="resume-right">
+                    <div class="info-block">
+                        <div class="name-row">
+                            <div class="name-en">LiYue</div>
+                            <div class="name-zh">李岳</div>
+                        </div>
+                    </div>
+                    <div class="info-block">
+                        <div class="info-label">Phone . LINE ID</div>
+                        <div class="info-content">0979278549</div>
+                    </div>
+                    <div class="info-block">
+                        <div class="info-label">Gmail</div>
+                        <div class="info-gmail">asergr4068@gmail.com</div>
                     </div>
                 </div>
-                <!-- 圓 3 (Solid): 直徑 60px, 偏移 = 237.5 - 30 = 207.5px -->
-                <div class="planet-orbit" id="planet-orbit-3">
-                    <div class="planet" style="width: 60px; height: 60px; transform: translate(-50%, -50%) rotate(180deg) translateX(207.5px);">
-                        <div class="planet-core solid"></div>
-                    </div>
-                </div>
-                <!-- 圓 4 (Hollow): 直徑 40px, 偏移 = 237.5 - 20 = 217.5px -->
-                <div class="planet-orbit" id="planet-orbit-4">
-                    <div class="planet" style="width: 40px; height: 40px; transform: translate(-50%, -50%) rotate(270deg) translateX(217.5px);">
-                        <div class="planet-core hollow"></div>
-                    </div>
+
+                <!-- 向下滾動指示箭頭 (SVG) -->
+                <div class="scroll-indicator">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 16L6 10H18L12 16Z" fill="var(--text-color)" />
+                    </svg>
                 </div>
             </div>
 
-            <div class="resume-right">
-                <!-- 第一區塊 -->
-                <div class="info-block">
-                    <div class="name-row">
-                        <div class="name-en">LiYue</div>
-                        <div class="name-zh">李岳</div>
+            <!-- 第二屏：Skills Section -->
+            <div class="resume-skills">
+                <h2 class="skills-title">Software Skills Foundation</h2>
+
+                <div class="skills-wrapper">
+                    <div class="skills-left">
+                        <div class="skill-item">
+                            <model-viewer class="skill-logo" src="adobe_aiLogo.glb" camera-orbit="0deg 90deg 2m"
+                                interaction-prompt="none" disable-zoom disable-pan shadow-intensity="0"></model-viewer>
+                            <div class="skill-data">
+                                <div class="skill-info">
+                                    <span class="skill-name">Adobe Illustrator</span>
+                                    <span class="skill-percent">100%</span>
+                                </div>
+                                <div class="skill-bar-track">
+                                    <div class="skill-bar-fill" data-percent="100%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <model-viewer class="skill-logo" src="adobe_aeLogo.glb" camera-orbit="0deg 90deg 2m"
+                                scale="0.85 0.85 0.85" interaction-prompt="none" disable-zoom disable-pan
+                                shadow-intensity="0"></model-viewer>
+                            <div class="skill-data">
+                                <div class="skill-info">
+                                    <span class="skill-name">Adobe After Effects</span>
+                                    <span class="skill-percent">70%</span>
+                                </div>
+                                <div class="skill-bar-track">
+                                    <div class="skill-bar-fill" data-percent="70%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <model-viewer class="skill-logo" src="adobe_psLogo.glb" camera-orbit="0deg 90deg 2m"
+                                interaction-prompt="none" disable-zoom disable-pan shadow-intensity="0"></model-viewer>
+                            <div class="skill-data">
+                                <div class="skill-info">
+                                    <span class="skill-name">Adobe Photoshop</span>
+                                    <span class="skill-percent">60%</span>
+                                </div>
+                                <div class="skill-bar-track">
+                                    <div class="skill-bar-fill" data-percent="60%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <model-viewer class="skill-logo" src="adobe_idLogo.glb" camera-orbit="0deg 90deg 2m"
+                                interaction-prompt="none" disable-zoom disable-pan shadow-intensity="0"></model-viewer>
+                            <div class="skill-data">
+                                <div class="skill-info">
+                                    <span class="skill-name">Adobe InDesign</span>
+                                    <span class="skill-percent">30%</span>
+                                </div>
+                                <div class="skill-bar-track">
+                                    <div class="skill-bar-fill" data-percent="30%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <model-viewer class="skill-logo" src="blenderLogo.glb" camera-orbit="0deg 90deg 2m"
+                                interaction-prompt="none" disable-zoom disable-pan shadow-intensity="0"></model-viewer>
+                            <div class="skill-data">
+                                <div class="skill-info">
+                                    <span class="skill-name">Blender 3D</span>
+                                    <span class="skill-percent">90%</span>
+                                </div>
+                                <div class="skill-bar-track">
+                                    <div class="skill-bar-fill" data-percent="90%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <model-viewer class="skill-logo" src="AntigravityLogo.glb" camera-orbit="0deg 90deg 2m"
+                                interaction-prompt="none" disable-zoom disable-pan shadow-intensity="0"></model-viewer>
+                            <div class="skill-data">
+                                <div class="skill-info">
+                                    <span class="skill-name">Antigravity Coding</span>
+                                    <span class="skill-percent">60%</span>
+                                </div>
+                                <div class="skill-bar-track">
+                                    <div class="skill-bar-fill" data-percent="60%"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <!-- 第二區塊 -->
-                <div class="info-block">
-                    <div class="info-label">Phone . LINE ID</div>
-                    <div class="info-content">0979278549</div>
-                </div>
-                <!-- 第三區塊 -->
-                <div class="info-block">
-                    <div class="info-label">Gmail</div>
-                    <div class="info-gmail">asergr4068@gmail.com</div>
+
+                    <div class="skills-right">
+                        <div class="bio-window">
+                            <button id="bio-lang-toggle" class="lang-toggle-btn">EN</button>
+                            <div class="bio-text">
+                                <div class="lang-zh">
+                                    <p>畢業於朝陽科技大學視覺傳達設計系，個人熱愛書籍與心理學，深信人生經驗是成長的重要養分。為了增強社會實務經驗，曾經連續兩年在寒暑假期間於迪卡儂運動公司打工。哲學知識讓我在人際溝通和正向思考上有所反思，社會的經歷使我變得更加理解自己，提升了與人交流的能力。我從同事獲得了一句啟發人心的話：「解決問題的方法絕對有，只是你要去找到它。」這句話成為我在面對挑戰時的重要信念。</p>
+                                    <p>我善於自主學習。初次接觸哲學與3D軟體，雖然面臨思維與技術挑戰，但好奇心驅使我在學校課程開始前便開始自學，也因此在課程與個人價值觀中取得成就感，讓3D與哲學成為我熱愛的領域，課程結束後，我仍持續透過網路書本資源精進思想與技術，力求更上層樓。</p>
+                                    <p>書籍對我而言是重要的閒暇樂趣與自省，《被討厭的勇氣》這本書讓我開啟書籍興趣的大門。也勇於面對社會共存，透過「做中學」來提升解決問題的能力。</p>
+                                    <p>我是一個不怕挫折、熱愛哲理思考的人。</p>
+                                </div>
+                                <div class="lang-en" style="display: none; opacity: 0;">
+                                    <p>I graduated from the Department of Visual Communication Design at Chaoyang University of Technology. I am passionate about reading and psychology, and I firmly believe that life experiences are essential nutrients for personal growth. To gain practical work experience, I worked part-time at Decathlon during my winter and summer vacations for two consecutive years.</p>
+                                    <p>Exploring philosophy has prompted me to reflect deeply on interpersonal communication and positive thinking. Meanwhile, my work experiences have helped me understand myself better and significantly improved my communication skills. A colleague once shared an inspiring thought with me: "There is always a way to solve a problem; you just have to find it." This has become my core guiding principle whenever I face challenges.</p>
+                                    <p>I excel at self-directed learning. When I was first introduced to philosophy and 3D software, I faced both conceptual and technical challenges. However, my curiosity drove me to start teaching myself before the university courses even began. This proactive approach gave me a profound sense of achievement in both my coursework and personal development, turning 3D design and philosophy into two of my greatest passions. Even after the courses ended, I have continued to hone my technical skills and broaden my perspectives through online resources and books, always striving for excellence.</p>
+                                    <p>Reading is not only a vital source of leisure for me but also a means of self-reflection. The book The Courage to Be Disliked is what truly opened the door to my love for reading. I am eager to engage with society and embrace the philosophy of "learning by doing" to continuously improve my problem-solving abilities.</p>
+                                    <p>Ultimately, I am a resilient individual who is never afraid of setbacks and genuinely loves philosophical thinking.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- 其他頁面佔位符 -->
+        <!-- 其他頁面區塊 -->
         <div class="content-container ui-element" id="graphic-page">
-            <h1 style="font-size: 5rem; font-weight: 200;">Graphic Design</h1>
+            <div class="graphic-container">
+                <!-- 專案一：Equal Care Poster -->
+                <div class="graphic-section">
+                    <div class="graphic-header">
+                        <h1>Equal Care Theme Poster</h1>
+                        <div class="zh-sub">平等關懷主題海報</div>
+                    </div>
+
+                    <div class="poster-grid">
+                        <!-- 第一張海報: Listen! -->
+                        <div class="poster-item">
+                            <div class="graphic-img-card" style="margin-bottom: 2.2rem;">
+                                <img src="gif/Generational indifference Listen!.gif" alt="Generational indifference Listen!">
+                            </div>
+                            <div class="poster-info">
+                                <div class="poster-en">Generational indifference Listen!</div>
+                                <div class="poster-zh">世代冷漠 聽！</div>
+                                <div class="poster-desc">反映現代人的聽而不覺</div>
+                            </div>
+                        </div>
+
+                        <!-- 第二張海報: Look! -->
+                        <div class="poster-item">
+                            <div class="graphic-img-card" style="margin-bottom: 2.2rem;">
+                                <img src="gif/Generational indifference Look!.gif" alt="Generational indifference Look!">
+                            </div>
+                            <div class="poster-info">
+                                <div class="poster-en">Generational indifference Look!</div>
+                                <div class="poster-zh">世代冷漠 看！</div>
+                                <div class="poster-desc">反映現代人的視而不見</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 專案二：Calendar Design -->
+                <div class="graphic-section">
+                    <div class="graphic-header">
+                        <h1>Calendar Design</h1>
+                        <div class="zh-sub">月曆設計</div>
+                    </div>
+
+                    <div class="graphic-desc">
+                        以台灣十二種特有種貓頭鷹為主題，採用簡約的幾何向量風格繪製。<br>
+                        色彩構思參考從日落到日出的色調變化，並根據月份特性（如年末派對季）進行氛圍呼應，<br>
+                        在保持現代感的同時，展現對台灣土地生態的關懷。
+                    </div>
+
+                    <!-- 封面與封底 -->
+                    <div class="calendar-hero">
+                        <div class="graphic-img-card">
+                            <img src="img/Calendar Design_01.jpg" alt="Calendar Front Cover">
+                        </div>
+                        <div class="graphic-img-card">
+                            <img src="img/Calendar Design_06.jpg" alt="Calendar Back Cover">
+                        </div>
+                    </div>
+
+                    <!-- 內頁網格 -->
+                    <div class="calendar-grid">
+                        <div class="graphic-img-card">
+                            <img src="img/Calendar Design_02.jpg" alt="Page 02">
+                        </div>
+                        <div class="graphic-img-card">
+                            <img src="img/Calendar Design_03.jpg" alt="Page 03">
+                        </div>
+                        <div class="graphic-img-card">
+                            <img src="img/Calendar Design_04.jpg" alt="Page 04">
+                        </div>
+                        <div class="graphic-img-card">
+                            <img src="img/Calendar Design_05.jpg" alt="Page 05">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 專案三：Textbook Design -->
+                <div class="graphic-section">
+                    <div class="graphic-header">
+                        <h1>Textbook Design</h1>
+                        <div class="zh-sub">教科書設計</div>
+                    </div>
+
+                    <div class="graphic-desc">
+                        作品名稱為科學漫遊，主題運用小學五年級會學習到的主要科目做發想，裡面共有宇宙、太陽、水溶液、植物。<br>
+                        因此拿太空人作為主角，乘坐太陽，幫地球的植物澆水，背了小書包，寓意為希望國小生對科學的熱情，未來有一天改善現在汙染嚴重的地球。
+                    </div>
+
+                    <div class="textbook-grid">
+                        <div class="graphic-img-card">
+                            <img src="img/Textbook Design_01.jpg" alt="Textbook 01">
+                        </div>
+                        <div class="graphic-img-card">
+                            <img src="img/Textbook Design_02.jpg" alt="Textbook 02">
+                        </div>
+                        <div class="graphic-img-card full-width">
+                            <img src="img/Textbook Design_03.jpg" alt="Textbook 03">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 專案四：Yung Ching Rehouse Co. Employer Branding -->
+                <div class="graphic-section">
+                    <div class="graphic-header">
+                        <h1>Yung Ching Rehouse Co. Employer Branding Recruitment Ad Design</h1>
+                        <div class="zh-sub">永慶房屋雇主品牌招募廣告設計</div>
+                    </div>
+
+                    <!-- 子系列 1：時間的主人 -->
+                    <div class="sub-project-header">
+                        <h2>Master of Time</h2>
+                        <div class="zh-sub">時間的主人</div>
+                    </div>
+                    <div class="graphic-desc">
+                        匆忙的工作日常，日復一日的打卡，為了上班，把約會都排掉，在這種沒有私人時間的生活中，永慶為你打造自由的上班時間，讓員工成為時間的主人。<br>
+                        海報利用醒目的隱晦動作，讓大眾知道永慶不會搶奪員工的時間，員工反而可以自由安排上班時段。
+                    </div>
+                    <div class="quad-grid" style="margin-bottom: 12vh;">
+                        <div class="graphic-img-card">
+                            <img src="img/Master of Time_01.jpg" alt="Master of Time 01">
+                        </div>
+                        <div class="graphic-img-card">
+                            <img src="img/Master of Time_02.jpg" alt="Master of Time 02">
+                        </div>
+                        <div class="graphic-img-card">
+                            <img src="img/Master of Time_03.jpg" alt="Master of Time 03">
+                        </div>
+                        <div class="graphic-img-card">
+                            <img src="img/Master of Time_Certificate of Entry.jpg" alt="Certificate of Entry">
+                        </div>
+                    </div>
+
+                    <!-- 子系列 2：試可而止 -->
+                    <div class="sub-project-header">
+                        <h2>Try it and then stop.</h2>
+                        <div class="zh-sub">試可而止</div>
+                    </div>
+                    <div class="graphic-desc">
+                        現代職場人每天在「試」與「撐」中掙扎：試工作、試耐力、試底線，卻很少有人問過自己——這些努力，值得嗎？<br>
+                        作品以三種極端氣候（雨天／酷暑／寒冬）下的打工族為主角，呈現一種「已經夠苦了」的情境。他們淋雨、流汗、凍僵，卻仍帶著一絲笑意伸手遞出商品——象徵著我們每一個曾經努力卻未必被看見的人。<br>
+                        搭配主標語：「不要再試了，這次選永慶」 副標語：「你努力試過了，該試一份值得你的工作」，強化轉職動機與價值感。以口語直白的方式，建立與年輕族群的共鳴。
+                    </div>
+                    <div class="quad-grid" style="margin-bottom: 12vh;">
+                        <div class="graphic-img-card">
+                            <img src="img/Try it and then stop_01.jpg" alt="Try it and stop 01">
+                        </div>
+                        <div class="graphic-img-card">
+                            <img src="img/Try it and then stop_02.jpg" alt="Try it and stop 02">
+                        </div>
+                        <div class="graphic-img-card">
+                            <img src="img/Try it and then stop_03.jpg" alt="Try it and stop 03">
+                        </div>
+                        <div class="graphic-img-card">
+                            <img src="img/Try it and then stop_Certificate of Entry.jpg" alt="Certificate of Entry">
+                        </div>
+                    </div>
+
+                    <!-- 子系列 3：從零開始的有料人生 -->
+                    <div class="sub-project-header">
+                        <h2>A fulfilling life starting from scratch</h2>
+                        <div class="zh-sub">從零開始的有料人生</div>
+                    </div>
+                    <div class="graphic-desc">
+                        用「白」對比「有料」，凸顯新鮮人即使零經驗，只要站對平台，也能被看見、被成就；而永慶，就是那個願意加料、敢給機會的平台。
+                    </div>
+                    <div class="quad-grid">
+                        <div class="graphic-img-card">
+                            <img src="img/A fulfilling life starting from scratch_01.jpg" alt="Fulfilling life 01">
+                        </div>
+                        <div class="graphic-img-card">
+                            <img src="img/A fulfilling life starting from scratch_02.jpg" alt="Fulfilling life 02">
+                        </div>
+                        <div class="graphic-img-card">
+                            <img src="img/A fulfilling life starting from scratch_03.jpg" alt="Fulfilling life 03">
+                        </div>
+                        <div class="graphic-img-card">
+                            <img src="img/A fulfilling life starting from scratch_Certificate.jpg" alt="Certificate">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 專案五：Trencadis And Clay Sculpture of Taiwans temple -->
+                <div class="graphic-section">
+                    <div class="graphic-header">
+                        <h1>Trencadis And Clay Sculpture of Taiwans temple</h1>
+                        <div class="zh-sub">就匠黏</div>
+                    </div>
+
+                    <div class="graphic-desc">
+                        廟宇剪黏是從中國傳來台灣，而且保存完好的藝術工藝，在現代已經不是單單是屋脊裝飾品，由匠轉藝，成為藝術品的價值。<br>
+                        在台灣面臨時代變化，如今年輕人越來越少從事傳統工藝，步入失傳危機的珍貴技藝，為了傳承這門獨特的藝術，我們想讓年輕人也可以初步體驗到剪黏施作過程，從中瞭解剪黏是什麼，更能對它產生好奇，進而熱愛、學習技藝直到傳承。
+                    </div>
+
+                    <div class="vertical-stack-grid">
+                        <div class="graphic-img-card">
+                            <img src="img/Trencadis And Clay Sculpture of Taiwans temple_01.jpg" alt="Sculpture 01">
+                        </div>
+                        <div class="graphic-img-card">
+                            <img src="img/Trencadis And Clay Sculpture of Taiwans temple_02.jpg" alt="Sculpture 02">
+                        </div>
+                        <div class="graphic-img-card">
+                            <img src="img/Trencadis And Clay Sculpture of Taiwans temple_03.jpg" alt="Sculpture 03">
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="content-container ui-element" id="three-page">
-            <h1 style="font-size: 5rem; font-weight: 200;">3D Works</h1>
+            <div class="three-container">
+                <!-- 3D 作品 Hero Section -->
+                <div class="three-hero">
+                    <div class="three-hero-left">
+                        <div class="three-img-card" style="aspect-ratio: auto; max-width: 90%;">
+                            <img src="img/skincare products.png" alt="skincare products">
+                        </div>
+                    </div>
+                    <div class="three-hero-right">
+                        <h1 class="three-hero-title">Blender 3D Works</h1>
+                        <div class="three-hero-zh">3D作品</div>
+                        <div class="three-hero-sub">skincare products</div>
+                    </div>
+                </div>
+
+                <!-- 3D 作品列表 -->
+                <div class="three-grid">
+                    <!-- Nintendo Switch -->
+                    <div class="three-item">
+                        <div class="three-img-card">
+                            <img src="img/Nintendo Switch.png" alt="Nintendo Switch">
+                        </div>
+                        <div class="three-info">
+                            <div class="three-en">Nintendo Switch</div>
+                        </div>
+                    </div>
+
+                    <!-- phone -->
+                    <div class="three-item">
+                        <div class="three-img-card">
+                            <img src="img/phone.png" alt="phone">
+                        </div>
+                        <div class="three-info">
+                            <div class="three-en">phone</div>
+                        </div>
+                    </div>
+
+                    <!-- The Humble Little House -->
+                    <div class="three-item">
+                        <div class="three-img-card">
+                            <img src="img/The Humble Little House.png" alt="The Humble Little House">
+                        </div>
+                        <div class="three-info">
+                            <div class="three-en">The Humble Little House</div>
+                        </div>
+                    </div>
+
+                    <!-- Pokémon -->
+                    <div class="three-item">
+                        <div class="three-img-card">
+                            <img src="img/Pokémon.png" alt="Pokémon">
+                        </div>
+                        <div class="three-info">
+                            <div class="three-en">Pokémon</div>
+                        </div>
+                    </div>
+
+                    <!-- Sanguine Requiem -->
+                    <div class="three-item">
+                        <div class="three-img-card">
+                            <img src="img/Sanguine Requiem.png" alt="Sanguine Requiem">
+                        </div>
+                        <div class="three-info">
+                            <div class="three-en">Sanguine Requiem</div>
+                        </div>
+                    </div>
+
+                    <!-- Strinova_KOKONA_Heavenly Nexus -->
+                    <div class="three-item">
+                        <div class="three-img-card">
+                            <img src="img/Strinova_KOKONA_Heavenly Nexus.png" alt="Strinova_KOKONA_Heavenly Nexus">
+                        </div>
+                        <div class="three-info">
+                            <div class="three-en">Strinova_KOKONA_Heavenly Nexus</div>
+                        </div>
+                    </div>
+
+                    <!-- Tesla_car -->
+                    <div class="three-item">
+                        <div class="three-img-card">
+                            <img src="img/Tesla_car.png" alt="Tesla_car">
+                        </div>
+                        <div class="three-info">
+                            <div class="three-en">Tesla_car</div>
+                        </div>
+                    </div>
+
+                    <!-- Fantasy Game Table -->
+                    <div class="three-item">
+                        <div class="three-img-card">
+                            <img src="img/Fantasy Game Table.png" alt="Fantasy Game Table">
+                        </div>
+                        <div class="three-info">
+                            <div class="three-en">Fantasy Game Table</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="content-container ui-element" id="project-page">
-            <h1 style="font-size: 5rem; font-weight: 200;">Practical Projects</h1>
+            <div class="graphic-container">
+                <!-- 實務專案 Hero 區塊：左圖右字 -->
+                <div class="project-hero">
+                    <div class="project-hero-left">
+                        <div class="poster-item">
+                            <div class="graphic-img-card" style="margin-bottom: 2.2rem;">
+                                <img src="img/DJ Cat.jpg" alt="DJ Cat">
+                            </div>
+                            <div class="poster-info">
+                                <div class="poster-en">DJ Cat</div>
+                                <div class="poster-zh">DJ貓貓</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-hero-right">
+                        <div class="graphic-header" style="text-align: left; margin-bottom: 0;">
+                            <h1>48k Diary Cover</h1>
+                            <div class="zh-sub">48k日記封面</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 原本的兩件作品網格 -->
+                <div class="graphic-section project-large-section" style="margin-top: 0;">
+                    <div class="poster-grid project-large-grid">
+                        <!-- Looking up at the insignificance -->
+                        <div class="poster-item">
+                            <div class="graphic-img-card" style="margin-bottom: 2.2rem;">
+                                <img src="img/Looking up at the insignificance.jpg" alt="Looking up at the insignificance">
+                            </div>
+                            <div class="poster-info">
+                                <div class="poster-en">Looking up at the insignificance</div>
+                                <div class="poster-zh">仰望渺小</div>
+                            </div>
+                        </div>
+
+                        <!-- Who is the murderer -->
+                        <div class="poster-item">
+                            <div class="graphic-img-card" style="margin-bottom: 2.2rem;">
+                                <img src="img/Who is the murderer.jpg" alt="Who is the murderer">
+                            </div>
+                            <div class="poster-info">
+                                <div class="poster-en">Who is the murderer</div>
+                                <div class="poster-zh">誰是兇手</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 新專案：Triangle desk calendar -->
+                <div class="graphic-section project-large-section">
+                    <div class="graphic-header">
+                        <h1>Triangle desk calendar</h1>
+                        <div class="zh-sub">三角桌曆</div>
+                    </div>
+
+                    <div class="sub-project-header">
+                        <h2>A Cat's Holiday Dream</h2>
+                        <div class="zh-sub">喵想過節</div>
+                    </div>
+
+                    <div class="poster-grid project-large-grid">
+                        <!-- 第一列：封面 (橫跨兩欄並置中) -->
+                        <div class="graphic-img-card" style="grid-column: 1 / -1; width: 75%; justify-self: center;">
+                            <img src="img/House Cat in Charge_05.jpg" alt="House Cat in Charge Cover">
+                        </div>
+
+                        <!-- 第二列 -->
+                        <div class="graphic-img-card">
+                            <img src="img/House Cat in Charge_06.jpg" alt="House Cat in Charge 06">
+                        </div>
+                        <div class="graphic-img-card">
+                            <img src="img/House Cat in Charge_07.jpg" alt="House Cat in Charge 07">
+                        </div>
+
+                        <!-- 第三列 -->
+                        <div class="graphic-img-card">
+                            <img src="img/House Cat in Charge_01.jpg" alt="House Cat in Charge 01">
+                        </div>
+                        <div class="graphic-img-card">
+                            <img src="img/House Cat in Charge_03.jpg" alt="House Cat in Charge 03">
+                        </div>
+
+                        <!-- 第四列 -->
+                        <div class="graphic-img-card">
+                            <img src="img/House Cat in Charge_02.jpg" alt="House Cat in Charge 02">
+                        </div>
+                        <div class="graphic-img-card">
+                            <img src="img/House Cat in Charge_04.jpg" alt="House Cat in Charge 04">
+                        </div>
+                    </div>
+
+                    <!-- 第二個桌曆作品：Pampering craze -->
+                    <div class="sub-project-header" style="margin-top: 8vh;">
+                        <h2>Pampering craze</h2>
+                        <div class="zh-sub">粉寵來潮</div>
+                    </div>
+
+                    <div class="poster-grid project-large-grid">
+                        <!-- 第一列：封面 (橫跨兩欄並置中) -->
+                        <div class="graphic-img-card" style="grid-column: 1 / -1; width: 75%; justify-self: center;">
+                            <img src="img/Pampering craze_05.jpg" alt="Pampering craze Cover">
+                        </div>
+
+                        <!-- 第二列 -->
+                        <div class="graphic-img-card">
+                            <img src="img/Pampering craze_06.jpg" alt="Pampering craze 06">
+                        </div>
+                        <div class="graphic-img-card">
+                            <img src="img/Pampering craze_07.jpg" alt="Pampering craze 07">
+                        </div>
+
+                        <!-- 第三列 -->
+                        <div class="graphic-img-card">
+                            <img src="img/Pampering craze_01.jpg" alt="Pampering craze 01">
+                        </div>
+                        <div class="graphic-img-card">
+                            <img src="img/Pampering craze_03.jpg" alt="Pampering craze 03">
+                        </div>
+
+                        <!-- 第四列 -->
+                        <div class="graphic-img-card">
+                            <img src="img/Pampering craze_02.jpg" alt="Pampering craze 02">
+                        </div>
+                        <div class="graphic-img-card">
+                            <img src="img/Pampering craze_04.jpg" alt="Pampering craze 04">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 新區塊：Authorized area -->
+                <div class="graphic-section project-large-section">
+                    <div class="graphic-header">
+                        <h1>Authorized area</h1>
+                        <div class="zh-sub">授權專區</div>
+                    </div>
+
+                    <!-- 第一個作品：Snoopy Calendar (左圖右字) -->
+                    <div class="project-hero">
+                        <div class="project-hero-left">
+                            <div class="graphic-img-card">
+                                <img src="img/Snoopy Calendar_01.jpg" alt="Snoopy Calendar 01">
+                            </div>
+                        </div>
+                        <div class="project-hero-right">
+                            <div class="sub-project-header" style="text-align: left; margin-bottom: 0;">
+                                <h2>Snoopy Calendar</h2>
+                                <div class="zh-sub">史努比月曆</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 作品下方雙欄網格 -->
+                    <div class="poster-grid project-large-grid">
+                        <div class="graphic-img-card">
+                            <img src="img/Snoopy Calendar_02.jpg" alt="Snoopy Calendar 02">
+                        </div>
+                        <div class="graphic-img-card">
+                            <img src="img/Snoopy Calendar_04.jpg" alt="Snoopy Calendar 04">
+                        </div>
+                        <div class="graphic-img-card">
+                            <img src="img/Snoopy Calendar_03.jpg" alt="Snoopy Calendar 03">
+                        </div>
+                        <div class="graphic-img-card">
+                            <img src="img/Snoopy Calendar_05.jpg" alt="Snoopy Calendar 05">
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="content-container ui-element" id="web-page">
             <h1 style="font-size: 5rem; font-weight: 200;">This webpage</h1>
@@ -907,27 +2245,37 @@
     </div>
     <div class="menu-content" id="menu-content">
         <div class="menu-item">
-            <model-viewer src="King'sPiece.glb" orientation="0deg 0deg 90deg" class="chess-piece" environment-image="neutral" shadow-intensity="1" shadow-softness="1" disable-zoom disable-pan></model-viewer>
+            <model-viewer src="King'sPiece.glb" orientation="0deg 0deg 90deg" class="chess-piece"
+                environment-image="neutral" shadow-intensity="1" shadow-softness="1" disable-zoom
+                disable-pan></model-viewer>
             <div class="en">Personal<br>resume</div>
             <div class="zh">個人履歷</div>
         </div>
         <div class="menu-item">
-            <model-viewer src="QueenPiece.glb" orientation="0deg 0deg 90deg" class="chess-piece" environment-image="neutral" shadow-intensity="1" shadow-softness="1" disable-zoom disable-pan></model-viewer>
+            <model-viewer src="QueenPiece.glb" orientation="0deg 0deg 90deg" class="chess-piece"
+                environment-image="neutral" shadow-intensity="1" shadow-softness="1" disable-zoom
+                disable-pan></model-viewer>
             <div class="en">Graphic<br>Design</div>
             <div class="zh">平面設計</div>
         </div>
         <div class="menu-item">
-            <model-viewer src="BishopPiece.glb" orientation="0deg 0deg 90deg" class="chess-piece" environment-image="neutral" shadow-intensity="1" shadow-softness="1" disable-zoom disable-pan></model-viewer>
+            <model-viewer src="BishopPiece.glb" orientation="0deg 0deg 90deg" class="chess-piece"
+                environment-image="neutral" shadow-intensity="1" shadow-softness="1" disable-zoom
+                disable-pan></model-viewer>
             <div class="en">3D Works</div>
             <div class="zh">3D 作品</div>
         </div>
         <div class="menu-item">
-            <model-viewer src="KnightPiece.glb" orientation="0deg 0deg 90deg" class="chess-piece" environment-image="neutral" shadow-intensity="1" shadow-softness="1" disable-zoom disable-pan></model-viewer>
+            <model-viewer src="KnightPiece.glb" orientation="0deg 0deg 90deg" class="chess-piece"
+                environment-image="neutral" shadow-intensity="1" shadow-softness="1" disable-zoom
+                disable-pan></model-viewer>
             <div class="en">Practical<br>Projects</div>
             <div class="zh">實務專案</div>
         </div>
         <div class="menu-item">
-            <model-viewer src="CastlePiece.glb" orientation="0deg 0deg 90deg" class="chess-piece" environment-image="neutral" shadow-intensity="1" shadow-softness="1" disable-zoom disable-pan></model-viewer>
+            <model-viewer src="CastlePiece.glb" orientation="0deg 0deg 90deg" class="chess-piece"
+                environment-image="neutral" shadow-intensity="1" shadow-softness="1" disable-zoom
+                disable-pan></model-viewer>
             <div class="en">This webpage<br>was created</div>
             <div class="zh">此網頁製作</div>
         </div>
@@ -941,25 +2289,39 @@
 
         // ================= 3. GSAP 自訂游標與互動邏輯 =================
         const cursor = document.querySelector('.custom-cursor');
-        
+
         // 保留 translate 置中不被覆寫，並加入 -30 度旋轉，以及防閃爍的初始隱藏 (autoAlpha: 0)
         gsap.set(cursor, { xPercent: -50, yPercent: -50, rotation: -30, autoAlpha: 0 });
 
         let isCursorVisible = false;
 
+        let isNearScrollbar = false;
+
         // 監聽鼠標移動，以 GSAP 營造平滑的水潤阻尼感
         window.addEventListener('mousemove', (e) => {
-            // 滑鼠有動作時確保游標顯示
-            if (!isCursorVisible) {
-                gsap.to(cursor, { autoAlpha: 1, duration: 0.3 });
-                isCursorVisible = true;
+            // 偵測是否進入右側 20px 的捲軸感應區
+            const nearScrollbar = e.clientX >= window.innerWidth - 20;
+
+            if (nearScrollbar) {
+                if (!isNearScrollbar) {
+                    gsap.to(cursor, { autoAlpha: 0, duration: 0.2 });
+                    isNearScrollbar = true;
+                    isCursorVisible = false;
+                }
+            } else {
+                if (isNearScrollbar || !isCursorVisible) {
+                    gsap.to(cursor, { autoAlpha: 1, duration: 0.3 });
+                    isNearScrollbar = false;
+                    isCursorVisible = true;
+                }
+
+                gsap.to(cursor, {
+                    x: e.clientX,
+                    y: e.clientY,
+                    duration: 0.15,
+                    ease: "power2.out"
+                });
             }
-            gsap.to(cursor, {
-                x: e.clientX,
-                y: e.clientY,
-                duration: 0.15,
-                ease: "power2.out"
-            });
         });
 
         // 游標移出視窗時隱藏游標
@@ -974,7 +2336,7 @@
             isCursorVisible = true;
         });
 
-        const interactives = document.querySelectorAll('button, a, label, .menu-item, .scramble-btn, .timer-btn');
+        const interactives = document.querySelectorAll('button, a, label, .menu-item, .scramble-btn, .timer-btn, .lang-toggle-btn');
         interactives.forEach(el => {
             el.addEventListener('mouseenter', () => {
                 gsap.to(cursor, { scale: 1.25, duration: 0.3, ease: "power2.out" });
@@ -982,6 +2344,110 @@
             el.addEventListener('mouseleave', () => {
                 gsap.to(cursor, { scale: 1, duration: 0.3, ease: "power2.out" });
             });
+        });
+
+        // ================= 技能區塊功能實作 =================
+        const skillPage = document.getElementById('resume-page');
+        const skillLogos = document.querySelectorAll('.skill-logo');
+        const skillFills = document.querySelectorAll('.skill-bar-fill');
+
+        skillLogos.forEach(viewer => {
+            // 1. 材質設定：深灰色塑膠反光
+            viewer.addEventListener('load', () => {
+                const model = viewer.model;
+                if (model && model.materials) {
+                    model.materials.forEach(material => {
+                        const pbr = material.pbrMetallicRoughness;
+                        pbr.setBaseColorFactor([0.15, 0.15, 0.15, 1.0]);
+                        pbr.setMetallicFactor(0.05);
+                        pbr.setRoughnessFactor(0.25);
+                    });
+                }
+            });
+
+            // 2. 滑鼠跟隨互動 (稍微轉動)
+            window.addEventListener('mousemove', (e) => {
+                // 僅在頁面可見時執行計算以節省效能
+                if (getComputedStyle(skillPage).opacity < 0.1) return;
+
+                const rect = viewer.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+
+                // 計算滑鼠相對於元件中心的位移百分比
+                const dx = (e.clientX - centerX) / window.innerWidth;
+                const dy = (e.clientY - centerY) / window.innerHeight;
+
+                // 轉化為角度 (限制在小範圍內避免過度扭曲)
+                const orbitX = dx * 40;     // 左右 40 度
+                const orbitY = 90 + dy * 30; // 上下 30 度偏移基準 90 度
+
+                viewer.cameraOrbit = `${orbitX}deg ${orbitY}deg 2m`;
+            });
+        });
+
+        // 3. 監控捲動：觸發進度條進場動畫與視差效果
+        const parallaxBg = document.querySelector('.main-circle-a');
+        const parallaxPhoto = document.querySelector('.resume-photo');
+        const parallaxInfoBlocks = document.querySelectorAll('.resume-right .info-block');
+
+        skillPage.addEventListener('scroll', () => {
+            const st = skillPage.scrollTop;
+
+            // 視差滾動：調整位移倍率
+            gsap.to(parallaxBg, { y: st * 0.2, duration: 0.1, overwrite: 'auto' });
+            gsap.to(parallaxPhoto, { y: st * 0.1, duration: 0.1, overwrite: 'auto' });
+
+            // 文字分層視差：三個區塊產生錯落的 Y 軸位移，增強 Z 軸分層空間感
+            if (parallaxInfoBlocks.length >= 3) {
+                gsap.to(parallaxInfoBlocks[0], { y: st * -0.55, duration: 0.1, overwrite: 'auto' }); // 姓名 (最快)
+                gsap.to(parallaxInfoBlocks[1], { y: st * -0.35, duration: 0.1, overwrite: 'auto' }); // 電話 (中等)
+                gsap.to(parallaxInfoBlocks[2], { y: st * -0.15, duration: 0.1, overwrite: 'auto' }); // Gmail (最慢)
+            }
+
+            skillFills.forEach(fill => {
+                const rect = fill.getBoundingClientRect();
+                // 當元素進入視窗下方 15% 處時觸發
+                if (rect.top < window.innerHeight * 0.85) {
+                    fill.style.width = fill.getAttribute('data-percent');
+                }
+            });
+        });
+
+        // ================= 自傳中英文切換邏輯 =================
+        const bioLangToggle = document.getElementById('bio-lang-toggle');
+        const langZh = document.querySelector('.lang-zh');
+        const langEn = document.querySelector('.lang-en');
+        let currentBioLang = 'zh';
+
+        bioLangToggle.addEventListener('click', () => {
+            // 防止動畫重疊
+            if (gsap.isTweening(langZh) || gsap.isTweening(langEn)) return;
+
+            const isEn = currentBioLang === 'zh';
+            const hideEl = isEn ? langZh : langEn;
+            const showEl = isEn ? langEn : langZh;
+
+            const tl = gsap.timeline();
+
+            tl.to(hideEl, { 
+                opacity: 0, 
+                duration: 0.4, 
+                ease: "power2.in",
+                onComplete: () => {
+                    hideEl.style.display = 'none';
+                    showEl.style.display = 'block';
+                    gsap.set(showEl, { opacity: 0 }); // 確保起始狀態為 0
+                }
+            })
+            .to(showEl, { 
+                opacity: 1, 
+                duration: 0.5,
+                ease: "power2.out"
+            });
+
+            currentBioLang = isEn ? 'en' : 'zh';
+            bioLangToggle.innerText = isEn ? '中文' : 'EN';
         });
     </script>
 
@@ -1097,7 +2563,49 @@
         scene.add(particlesGroup);
 
         // ================= 模型載入與位置完美居中 =================
-        const loader = new GLTFLoader();
+        // ================= 模型載入管理 (LoadingManager) =================
+        const loadingManager = new THREE.LoadingManager();
+        const loadingBarFill = document.getElementById('loading-bar-fill');
+        const loadingCount = document.getElementById('loading-count');
+
+        loadingManager.onProgress = (url, itemsLoaded, itemsTotal) => {
+            const progress = (itemsLoaded / itemsTotal) * 100;
+            if (loadingBarFill) loadingBarFill.style.width = progress + '%';
+            if (loadingCount) loadingCount.textContent = Math.round(progress) + '%';
+        };
+
+        loadingManager.onLoad = () => {
+            // 當所有模型（BW 與 Color）載入完成後
+            const tl = gsap.timeline();
+
+            // 讓進度條停留在 100% 一小段時間增加穩定感
+            tl.to({}, { duration: 0.5 });
+
+            // Loading 畫面淡出
+            tl.to('#loading-screen', {
+                opacity: 0,
+                duration: 1.2,
+                ease: "power2.inOut",
+                onComplete: () => {
+                    document.getElementById('loading-screen').style.display = 'none';
+                }
+            });
+
+            // 在 Loading 畫面淡出的過程中，提前啟動模型進場 lerp 動畫
+            tl.add(() => {
+                modelInner = bwCube;
+
+                // 設定初始位置與大小，讓 animate() 中的 lerp 接手
+                loadedModel.scale.setScalar(0.001);
+                loadedModel.position.set(0, 5, -15);
+                loadedModel.userData.targetScale = bwCube.userData.targetScale;
+                loadedModel.userData.extraSpin = 25;
+
+                camera.lookAt(0, 0, 0);
+            }, "-=0.8"); // 提早 0.8 秒啟動模型動畫
+        };
+
+        const loader = new GLTFLoader(loadingManager);
         let loadedModel = new THREE.Group(); // 最外層容器
         loadedModel.userData = { targetScale: 0.001, extraSpin: 0 }; // 預防初始化前的存取
         scene.add(loadedModel);
@@ -1175,16 +2683,9 @@
             return puzzleRoot;
         }
 
-        Promise.all([loadBW(), loadColor()]).then(() => {
-            modelInner = bwCube;
-            
-            loadedModel.scale.setScalar(0.001);
-            loadedModel.position.set(0, 5, -15);
-            loadedModel.userData.targetScale = bwCube.userData.targetScale;
-            loadedModel.userData.extraSpin = 25;
-            
-            camera.lookAt(0, 0, 0);
-        });
+        // 啟動模型載入序列
+        loadBW();
+        loadColor();
 
 
         window.addEventListener('resize', () => {
@@ -1254,7 +2755,7 @@
         // ================= 遊玩模式：雙擊進入與滑鼠拖曳判定 =================
         window.addEventListener('dblclick', (e) => {
             if (isShuffling || !bwCube || !colorCube) return;
-            
+
             mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
             mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
             raycaster.setFromCamera(mouse, camera);
@@ -1272,16 +2773,16 @@
                 gsap.to('#scramble-btn', { opacity: 1, x: 0, pointerEvents: 'auto', duration: 0.5, delay: 0.3 });
                 gsap.to('#timer-container', { opacity: 1, y: 0, pointerEvents: 'auto', duration: 0.5, delay: 0.4 });
                 gsap.to(particlesGroup.material, { opacity: 0, duration: 0.5 });
-                
+
                 // 翻轉動畫
                 const targetRotationY = loadedModel.rotation.y + Math.PI;
-                gsap.to(loadedModel.rotation, { 
-                    y: targetRotationY, 
-                    x: 0, 
-                    z: 0, 
-                    duration: 0.5, 
+                gsap.to(loadedModel.rotation, {
+                    y: targetRotationY,
+                    x: 0,
+                    z: 0,
+                    duration: 0.5,
                     ease: "power2.inOut",
-                    onUpdate: function() {
+                    onUpdate: function () {
                         // 在一半 (0.25s) 時切換模型
                         if (this.progress() >= 0.5 && modelInner !== colorCube) {
                             bwCube.visible = false;
@@ -1357,14 +2858,14 @@
             function getScreenVectorForAxis(axisName) {
                 const axisVector = new THREE.Vector3();
                 axisVector[axisName] = 1;
-                
+
                 // 微小旋轉造成的局部座標位移 (Displacement = Axis x LocalPoint)
                 const moveLocal = new THREE.Vector3().crossVectors(axisVector, localPoint).normalize().multiplyScalar(0.1);
                 const movedWorld = localPoint.clone().add(moveLocal);
                 modelInner.localToWorld(movedWorld);
 
                 const movedScreen = movedWorld.project(camera);
-                
+
                 // 轉換為實際的像素位移向量 (注意螢幕 Y 軸向下為正，需反轉)
                 return new THREE.Vector2(
                     (movedScreen.x - screenPoint.x) * (window.innerWidth / 2),
@@ -1429,7 +2930,7 @@
                     pivot.updateMatrixWorld(true);
                     layerCubies.forEach(c => modelInner.attach(c));
                     modelInner.remove(pivot);
-                    
+
                     isShuffling = false;
                     dragStartPoint = null;
                     clickedCubie = null;
@@ -1574,19 +3075,19 @@
                     ease: "power2.out"
                 });
 
-                // 與文字同步執行：西洋棋落下，加上 staggered 呈現節奏感
-                const pieces = document.querySelectorAll('.chess-piece');
-                pieces.forEach((piece, index) => {
-                    const pos = index === 0 ? "<" : "<0.1";
-                    tl.fromTo(piece,
-                        { y: -80, opacity: 0 },
-                        { 
-                            y: 0, opacity: 1, duration: 0.6, ease: "bounce.out",
-                            onComplete: () => { piece.autoRotate = true; } 
-                        },
-                        pos
-                    );
-                });
+            // 與文字同步執行：西洋棋落下，加上 staggered 呈現節奏感
+            const pieces = document.querySelectorAll('.chess-piece');
+            pieces.forEach((piece, index) => {
+                const pos = index === 0 ? "<" : "<0.1";
+                tl.fromTo(piece,
+                    { y: -80, opacity: 0 },
+                    {
+                        y: 0, opacity: 1, duration: 0.6, ease: "bounce.out",
+                        onComplete: () => { piece.autoRotate = true; }
+                    },
+                    pos
+                );
+            });
         });
 
         // ================= 計時器邏輯 =================
@@ -1602,12 +3103,12 @@
         function updateTimerDisplay() {
             const now = Date.now();
             const diff = now - startTime + elapsedTime;
-            
+
             const m = Math.floor(diff / 60000);
             const s = Math.floor((diff % 60000) / 1000);
             const ms = Math.floor((diff % 1000) / 10);
-            
-            timerDisplay.innerText = 
+
+            timerDisplay.innerText =
                 `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}:${ms.toString().padStart(2, '0')}`;
         }
 
@@ -1618,7 +3119,7 @@
                 startTime = Date.now();
                 timerMainBtn.innerText = 'Pause the timer';
                 gsap.to(timerResetBtn, { opacity: 0, pointerEvents: 'none', duration: 0.3 });
-                
+
                 timerInterval = setInterval(updateTimerDisplay, 10);
             } else {
                 // 暫停計時
@@ -1721,10 +3222,10 @@
 
             // [新增]：讓當前正在顯示的頁面執行退場動畫，避免重疊
             if (pagesInfo[currentIdx]) {
-                gsap.to(pagesInfo[currentIdx], { 
-                    opacity: 0, 
-                    y: -20, 
-                    duration: 0.4, 
+                gsap.to(pagesInfo[currentIdx], {
+                    opacity: 0,
+                    y: -20,
+                    duration: 0.4,
                     ease: "power2.in",
                     onComplete: () => {
                         pagesInfo[currentIdx].style.pointerEvents = 'none';
@@ -1735,10 +3236,10 @@
             // 1. 核心修復：在建立 Timeline 之前，瞬間重置隱藏的棋子
             gsap.killTweensOf(activePiece);
             gsap.set(activePiece, { clearProps: "all" });
-            
+
             // 將棋子塞回原始父節點
             activeParent.insertBefore(activePiece, activeParent.firstChild);
-            
+
             // 🌟 移除替身元素
             const placeholder = activeParent.querySelector('.chess-placeholder');
             if (placeholder) placeholder.remove();
@@ -1747,7 +3248,7 @@
             activePiece.removeAttribute('style');
             activePiece.removeAttribute('camera-orbit');
             activePiece.autoRotate = false;
-            
+
             // 設定為準備落下的隱藏狀態
             gsap.set(activePiece, { opacity: 0, y: -80 });
 
@@ -1787,9 +3288,9 @@
                 const pos = 0.6 + (index === 0 ? 0 : 0.1);
                 tl.fromTo(piece,
                     { y: -80, opacity: 0 },
-                    { 
+                    {
                         y: 0, opacity: 1, duration: 0.6, ease: "bounce.out",
-                        onComplete: () => { piece.autoRotate = true; } 
+                        onComplete: () => { piece.autoRotate = true; }
                     },
                     pos
                 );
@@ -1825,7 +3326,7 @@
                 // 準備標題所需內容
                 const enText = item.querySelector('.en').innerHTML;
                 const zhText = item.querySelector('.zh').innerText;
-                
+
                 const clickedPiece = item.querySelector('.chess-piece');
                 const siblings = Array.from(menuItemsDOM).filter(m => m !== item);
 
@@ -1835,7 +3336,7 @@
 
                 // 為了讓這顆棋子能自由移動不受 Flexbox 影響，讀取它的目前絕對位置並轉為 position: fixed
                 const rect = clickedPiece.getBoundingClientRect();
-                
+
                 // 停止自轉
                 clickedPiece.autoRotate = false;
 
@@ -1859,7 +3360,7 @@
                     margin: 0,
                     zIndex: 100
                 });
-                
+
                 // 將它從原來的容器提出來獨立放在 body，避免等下其他東西消失影響它
                 document.body.appendChild(clickedPiece);
 
@@ -1880,7 +3381,7 @@
                     filter: "blur(1.5px)",
                     duration: 0.8,
                     ease: "power3.inOut",
-                    onUpdate: function() {
+                    onUpdate: function () {
                         const p = this.progress();
                         clickedPiece.setAttribute('camera-orbit', `${90 * p}deg 90deg auto`);
                     }
@@ -1891,7 +3392,7 @@
                     titleContainer.innerHTML = `<div class="en-title">${enText}</div><div class="zh-title">${zhText}</div>`;
                 }, "-=0.4");
 
-                tl.fromTo(titleContainer, 
+                tl.fromTo(titleContainer,
                     { x: 50, opacity: 0 },
                     { x: 0, opacity: 1, duration: 0.6, ease: "power2.out" },
                     "-=0.2"
@@ -1916,7 +3417,7 @@
                 const targetPage = pagesInfo[index];
                 if (targetPage) {
                     currentIdx = index; // 更新當前索引
-                    tl.fromTo(targetPage, 
+                    tl.fromTo(targetPage,
                         { opacity: 0, y: 30 },
                         { opacity: 1, y: 0, pointerEvents: 'auto', duration: 0.8, ease: "power2.out" }
                     );
@@ -1942,7 +3443,7 @@
             btn.addEventListener('click', () => {
                 const target = btn.getAttribute('data-target');
                 if (target === 'back') return;
-                
+
                 const targetIdx = parseInt(target);
                 if (targetIdx === currentIdx) return; // 點擊同頁不重複觸發
 
@@ -1952,10 +3453,10 @@
                 // 2. 淡出目前頁面
                 const currentPage = pagesInfo[currentIdx];
                 if (currentPage) {
-                    tl.to(currentPage, { 
-                        opacity: 0, 
-                        y: -20, 
-                        duration: 0.4, 
+                    tl.to(currentPage, {
+                        opacity: 0,
+                        y: -20,
+                        duration: 0.4,
                         ease: "power2.in",
                         onComplete: () => {
                             currentPage.style.pointerEvents = 'none';
@@ -1973,8 +3474,8 @@
                 const nextPage = pagesInfo[targetIdx];
                 if (nextPage) {
                     currentIdx = targetIdx; // 更新索引
-                    tl.fromTo(nextPage, 
-                        { opacity: 0, y: 20 }, 
+                    tl.fromTo(nextPage,
+                        { opacity: 0, y: 20 },
                         { opacity: 1, y: 0, pointerEvents: 'auto', duration: 0.6, ease: "power2.out" }
                     );
                 }
@@ -2006,7 +3507,7 @@
                     z: 0,
                     duration: 0.5,
                     ease: "power2.inOut",
-                    onUpdate: function() {
+                    onUpdate: function () {
                         if (this.progress() >= 0.5 && modelInner !== bwCube) {
                             colorCube.visible = false;
                             bwCube.visible = true;
